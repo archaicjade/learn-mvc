@@ -11,9 +11,35 @@
     <title>Avalon</title>
 </head>
 <body>
-    <div>
+    <div ms-controller="todos">
+        <form ms-on-submit="add">
+            <div>
+                <label>将下面输入的文字放入 todo list 中！</label>
+                <input type="text" autocomplete="off" ms-duplex="txt" />
+            </div>
+        </form>
+
+        <p ms-if="todolist.size()>0">todo list中现有{{todolist.size()}}项</p>
+        <ol>
+            <li ms-for="el in todolist">
+                {{el}}
+                <a href="javascript:;" ms-on-click="$remove">x</a>
+            </li>
+        </ol>
     </div>
 
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/avalon.js/2.2.4/avalon.min.js"></script>
+    <script src="~/Scripts/avalon.js"></script>
+    <script type="text/javascript">
+        var vm = avalon.define({
+            $id: "todos",
+            txt: '',
+            todolist: [],
+            add: function (e) {
+                e.preventDefault();
+                !!vm.txt.trim() && vm.todolist.push(vm.txt);
+                vm.txt = '';
+            }
+        });
+    </script>
 </body>
 </html>
