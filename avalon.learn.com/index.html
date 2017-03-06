@@ -1,0 +1,19 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <meta charset="utf-8" />
+    <script src="vendor/require/require.js" data-main="main.js"></script>
+    <style>
+        .ms-controller {
+            visibility: hidden;
+        }
+    </style>
+</head>
+<body ms-controller="root" class="ms-controller">
+    <div>{{header | html}}</div>
+    <div ms-include-src="page"></div>
+    <div>{{footer}}</div>
+</body>
+</html>
