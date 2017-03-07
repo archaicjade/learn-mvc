@@ -1,0 +1,49 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <meta charset="utf-8" />
+    <style>
+        div {
+            width: 260px;
+            height: 100px;
+        }
+
+            div.d1 {
+                background: red;
+            }
+
+            div.d2 {
+                background: green;
+            }
+
+            div.d3 {
+                background: blue;
+            }
+    </style>
+</head>
+<body ms-controller="test">
+
+    <button ms-on-click="toggle(1)">色块[red]</button>
+    <button ms-on-click="toggle(2)">色块[green]</button>
+    <button ms-on-click="toggle(3)">色块[blue]</button>
+
+    <div class="d1" ms-visible="currentIndex===1"></div>
+    <div class="d2" ms-visible="currentIndex===2"></div>
+    <div class="d3" ms-visible="currentIndex===3"></div>
+
+    <script src="vendor/avalon/avalon.js"></script>
+
+    <script>
+        avalon.config({ debug: true });
+        var vm = avalon.define({
+            $id: "test",
+            currentIndex: 1,
+            toggle: function (index) {
+                vm.currentIndex = index;
+            }
+        });
+    </script>
+</body>
+</html>
