@@ -1,0 +1,31 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <meta charset="utf-8" />
+</head>
+<body>
+
+    <div :controller="test">
+        <div style="width:200px;height:50px;" :css="{background:@color}"></div>
+
+        <select :duplex="@color">
+            <option value="red">红</option>
+            <option value="green">绿</option>
+            <option value="yellow">黄</option>
+        </select>
+    </div>
+    <script src="vendor/avalon/avalon.js"></script>
+    <script>
+        var vm = avalon.define({
+            $id: "test",
+            color: "red"
+        });
+
+        //vm.$watch("color", function (v) {
+        //    console.log(v);
+        //});
+    </script>
+</body>
+</html>

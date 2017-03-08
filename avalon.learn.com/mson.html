@@ -1,0 +1,52 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <meta charset="utf-8" />
+</head>
+<body>
+
+    <fieldset :controller="test">
+
+        <legend>事件回调传参学习</legend>
+        <div :mouseenter="callback" :mouseleave="callback">
+            {{@status}}
+            <br />
+            <input :on-input="check" type="text" />{{@field}}
+        </div>
+        <div :on-click="argsClick($event,100,@firstName)">点我</div>
+        <div :for="el in @array">
+            <p :on-click="loopClick(el,$event)">{{el}}</p>
+        </div>
+        <button :click="submit">submit</button>
+    </fieldset>
+
+    <script src="vendor/avalon/avalon.js"></script>
+    <script>
+        var vm = avalon.define({
+            $id: "test",
+            status: "event-type",
+            firstName: "firstName",
+            callback: function (e) {
+                vm.status = e.type;
+            },
+            field: "value-event-type",
+            check: function (e) {
+                vm.field = e.target.value + " " + e.type;
+            },
+            argsClick: function (e, a, b) {
+                console.log([].slice.call(arguments).join(","));
+            },
+            array: ["aaa", "bbb", "ccc"],
+            loopClick: function (a, e) {
+                console.log(a + " " + e.type);
+            },
+            submit:function(){
+                var data = vm.$model;
+                console.log(JSON.stringify(data));
+            }
+        });
+    </script>
+</body>
+</html>
