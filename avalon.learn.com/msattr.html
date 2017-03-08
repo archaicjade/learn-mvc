@@ -1,0 +1,46 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <meta charset="utf-8" />
+</head>
+<body>
+
+    <form ms-controller="attr">
+        <h2>布尔属性绑定（ms-attr-disabled,ms-attr-readonly）</h2>
+        <label>姓名</label>
+        <input ms-duplex="textModel" ms-attr="t1" />
+        <label>年龄</label>
+        <input ms-duplex="age" ms-attr-readonly="r1" />
+
+        <br />
+        <label>性别</label>
+        <label><input type="radio" ms-duplex-string="sex" value="男" />男</label>
+        <label><input type="radio" ms-duplex-string="sex" value="女" />女</label>
+        <label></label>
+
+        <br />
+        <label>工作</label>
+
+        <select>
+            <option value="IT">IT</option>
+            <option value="销售" ms-attr-selected="s1">销售</option>
+            <option value="产品">产品</option>
+        </select>
+    </form>
+    <script src="vendor/avalon/avalon.js"></script>
+
+    <script>
+        var vm = avalon.define({
+            $id: "attr",
+            textModel: "star",
+            t1: true,
+            age: 20,
+            r1: true,
+            sex: "女",
+            s1: true
+        });
+    </script>
+</body>
+</html>
