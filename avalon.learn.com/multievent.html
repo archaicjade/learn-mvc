@@ -1,0 +1,51 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <meta charset="utf-8" />
+</head>
+<body>
+
+
+    <fieldset>
+        <legend>一个元素邦定多个同种事件的回调</legend>
+        <div :controller="test">
+            <div :on-click="click1" :on-click-1="click2" :on-click-3="click3">click me</div>
+            <div>{{str1}}</div>
+            <div>{{str2}}</div>
+            <div>{{str3}}</div>
+
+
+            <div style="width:100px;height:100px;background:red;" :on-mouseenter-3="click1" :on-mouseenter-2="click2" :on-mouseenter="click3"></div>
+        </div>
+
+
+    </fieldset>
+
+
+    <script src="vendor/avalon/avalon.js"></script>
+    <script>
+        var count = 0,
+        vm = avalon.define({
+            $id: "test",
+            str1: "1",
+            str2: "2",
+            str3: "3",
+            click1: function () {
+                vm.str1 = "xxx" + (count++);
+                console.log("111");
+            },
+            click2: function () {
+                vm.str2 = "xxx" + (count++);
+                console.log("222");
+            },
+            click3: function () {
+                vm.str3 = "xxx" + (count++);
+                console.log("333");
+            }
+
+        });
+    </script>
+</body>
+</html>

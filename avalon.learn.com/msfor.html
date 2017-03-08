@@ -1,0 +1,45 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <meta charset="utf-8" />
+</head>
+<body>
+
+    <fieldset>
+        <legend>学习循环邦定</legend>
+
+
+        <div :controller="test">
+            <ul>
+                <li :for="(i,el) in ##array" data-for-rendered="##callback($event,##array[0],##obj['a'])">{{i}}---{{el}}</li>
+            </ul>
+
+            <ol>
+                <li :for="(k,v) in ##obj">{{k}}---{{v}}</li>
+            </ol>
+        </div>
+    </fieldset>
+
+
+
+    <script src="vendor/avalon/avalon.js"></script>
+    <script>
+        avalon.config({ debug: false });
+        var vm = avalon.define({
+            $id: "test",
+            array: [1, 2, 3, 4, 5],
+            obj: { a: 1, b: 2, c: 3 },
+            callback: function (e, a, b) {
+                console.log(this);
+                console.log(e.type);
+                console.log(e.target);
+                console.log(e);
+                console.log(a);
+                console.log(b);
+            }
+        });
+    </script>
+</body>
+</html>
