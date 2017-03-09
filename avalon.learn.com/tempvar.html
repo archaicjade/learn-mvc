@@ -1,0 +1,42 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <meta charset="utf-8" />
+    <style>
+        .ms-controller {
+            visibility: hidden;
+        }
+    </style>
+</head>
+<body>
+
+    <div :controller="test" class="ms-controller">
+        <ul>
+            <li :for="($index,el) in ##array" :on-click="##array.remove(el)">
+                {{el}},{{$index}}
+            </li>
+        </ul>
+
+    </div>
+
+    <div>
+        <ul>
+            <li></li>
+        </ul>
+    </div>
+
+    <script src="vendor/avalon/avalon.js"></script>
+    <script>
+        avalon.ready(function(){
+            avalon.define({
+                $id: "test",
+                array: [1, 2, 3, 4]
+            });
+            avalon.scan(document.body);
+        });
+
+    </script>
+</body>
+</html>

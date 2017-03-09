@@ -13,12 +13,25 @@
 
         <div :controller="test">
             <ul>
-                <li :for="(i,el) in ##array" data-for-rendered="##callback($event,##array[0],##obj['a'])">{{i}}---{{el}}</li>
+                <li :for="(i,el) in ##array | limitBy(2) as items" data-for-rendered="##callback($event,##array[0],##obj['a'])">{{i}}---{{el}}</li>
             </ul>
 
             <ol>
-                <li :for="(k,v) in ##obj">{{k}}---{{v}}</li>
+                <li :for="(k,v) in ##obj" data-for-rendered="##callback2($event,##obj)">{{k}}---{{v}}</li>
             </ol>
+
+            <ol>
+                <li :for="(i,el) in ##array" data-for-rendered="##del($event,)">
+                    <input type="button" :duplex="el" :on-click="##array.remove(el)" />
+                </li>
+            </ol>
+        </div>
+
+        <div :controller="test2">
+            <!--ms-for: el in ##array-->
+            <p>{{el}}</p>
+            <p>{{el}}</p>
+            <!--ms-for-end:-->
         </div>
     </fieldset>
 
@@ -26,19 +39,31 @@
 
     <script src="vendor/avalon/avalon.js"></script>
     <script>
-        avalon.config({ debug: false });
-        var vm = avalon.define({
-            $id: "test",
-            array: [1, 2, 3, 4, 5],
-            obj: { a: 1, b: 2, c: 3 },
-            callback: function (e, a, b) {
-                console.log(this);
-                console.log(e.type);
-                console.log(e.target);
-                console.log(e);
-                console.log(a);
-                console.log(b);
-            }
+        avalon.config({ debug: true });
+        avalon.ready(function () {
+
+            avalon.define({
+                $id: "test2",
+                array: [1, 2, 3, 4, 5]
+            });
+            var global = [], model =
+            avalon.define({
+                $id: "test",
+                array: [1, 2, 3, 4, 5],
+                obj: { a: 1, b: 2, c: 3 },
+                callback: function (e, a, b) {
+                },
+                callback2: function (e, o) {
+                    console.log(e);
+                    console.log(o.a);
+                },
+                del: function (e, el) {
+                    console.log(el);
+                    console.log(global);
+                }
+            });
+
+            avalon.scan(document.body);
         });
     </script>
 </body>

@@ -1,0 +1,59 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <meta charset="utf-8" />
+</head>
+<body>
+
+
+    <div :controller="test">
+        <h1>数据的更新：</h1>
+        <ul>
+            <li :for="(k,v) in ##data">{{k}}--{{v}}</li>
+        </ul>
+
+        <ul>
+            <li :for="el in ##array1">{{el}}</li>
+        </ul>
+
+        <ul>
+            <li :for="el in ##array2">{{el.text}}</li>
+        </ul>
+    </div>
+
+    <script src="vendor/avalon/avalon.js"></script>
+    <script>
+        avalon.ready(function () {
+            var vm =
+            avalon.define({
+                $id: "test",
+                data: {
+                    aaa: 111,
+                    bbb: 222,
+                    ccc: 333
+                },
+                array1: ['a', 'b', 'c'],
+                array2: [{ text: 'a' }, { text: 'b' }, { text: 'c' }]
+            });
+
+            setTimeout(function () {
+                vm.data.aaa = '11';
+            }, 2000);
+
+            setTimeout(function () {
+                vm.array1.set(0, 10);
+            }, 2000)
+
+            setTimeout(function () {
+                vm.array2[0].text = "aaaa";
+            }, 2000)
+
+            avalon.scan(document.body);
+
+
+        });
+    </script>
+</body>
+</html>
