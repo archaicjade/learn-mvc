@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="vendor/avalon/avalon.js"></script>
+</head>
+<body :controller="test">
+
+<h3>
+    avalon vm.$fire 的升级版
+</h3>
+
+<button type="button" :on-click="click">
+    捕获
+</button>
+
+<div :controller="parent">
+    <button type="button">
+        广播
+    </button>
+
+    <div :controller="son">
+        <button type="button">冒泡</button>
+    </div>
+</div>
+
+<script>
+    avalon.ready(function () {
+
+        var vm = avalon.define({
+                $id: "test",
+                click: function () {
+                    console.log("向下捕获");
+                    vm.$fire("down!aaa", "capture");
+                }
+            }),
+            parent = avalon.define({
+                $id: "parent",
+                aaa: "33333"
+            }),
+            son = avalon.define({
+                $id: "son"
+            });
+
+        parent.$watch("aaa", function (v) {
+            console.log(v);
+            console.log("parent事件被触发了");
+        });
+
+        son.$watch("aaa", function () {
+            console.log(v);
+            console.log("parent事件被触发了");
+        });
+
+        avalon.scan(document.body);
+    })
+</script>
+</body>
+</html>
+
