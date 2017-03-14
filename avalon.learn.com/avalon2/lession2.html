@@ -1,0 +1,108 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <meta charset="utf-8" />
+    <style>
+        .ms-controller {
+            visibility: hidden;
+        }
+    </style>
+</head>
+<body>
+
+    <fieldset>
+        <legend>插值表达式</legend>
+        <div :controller="vava" class="ms-controller">
+            <p>{{##aaa}}{{##bbb}}</p>
+            <p>{{##aaa+##bbb}}</p:skip="true">
+            <p>{{##aaa+##bbb|uppercase}}</p>
+        </div>
+
+    </fieldset>
+
+    <fieldset>
+        <legend>ms-skip</legend>
+        <div :controller="vava" class="ms-controller">
+            <p>{{##aaa}}{{##bbb}}</p>
+            <p :skip="true">{{##aaa+##bbb}}</p:skip="true">
+            <p>{{##aaa+##bbb|uppercase}}</p>
+            <div :skip="true">
+                <p>{{##aaa}}</p>
+            </div>
+        </div>
+
+    </fieldset>
+
+    <fieldset>
+        <legend>ms-controller</legend>
+        <div :controller="AAA" class="ms-controller">
+            <div>{{##name}}:{{##color}}</div>
+            <div :controller="BBB">
+                <div>{{##name}}:{{##color}}</div>
+                <div :controller="CCC">
+                    <div>{{##name}}:{{##color}}</div>
+                </div>
+                <div :controller="DDD">
+                    <div>{{##name}}:{{##color}}</div>
+                </div>
+            </div>
+        </div>
+
+    </fieldset>
+
+
+    <fieldset>
+        <legend>ms-important</legend>
+        <div :controller="AAA" class="ms-controller">
+            <div>{{##name}}:{{##color}}</div>
+            <div :controller="BBB">
+                <div>{{##name}}:{{##color}}</div>
+                <div :important="CCC">
+                    <div>{{##name}}:{{##color}}</div>
+                </div>
+                <div :important="DDD">
+                    <div>{{##name}}:{{##color}}</div>
+                </div>
+            </div>
+        </div>
+
+    </fieldset>
+
+    <fieldset>
+        <legend>属性绑定</legend>
+        <div :controller="AAA" class="ms-controller">
+            <div>{{##name}}:{{##color}}</div>
+            <div :controller="BBB">
+                <div>{{##name}}:{{##color}}</div>
+                <div :important="CCC">
+                    <div>{{##name}}:{{##color}}</div>
+                </div>
+                <div :important="DDD">
+                    <div>{{##name}}:{{##color}}</div>
+                </div>
+            </div>
+        </div>
+
+    </fieldset>
+
+    <script src="../vendor/avalon/avalon.js"></script>
+    <script type="text/javascript">
+        avalon.ready(function () {
+
+            var model = avalon.define({
+                $id: "vava",
+                aaa: "aaa",
+                bbb: "bbb"
+            }),
+            AAA = avalon.define({ $id: "AAA", name: "a", color: "red" }),
+            BBB = avalon.define({ $id: "BBB", name: "b", color: "blue" }),
+            CCC = avalon.define({ $id: "CCC", color: "black" }),
+            DDD = avalon.define({ $id: "DDD", name: "d", });
+
+            avalon.scan(document.body);
+        });
+    </script>
+</body>
+</html>

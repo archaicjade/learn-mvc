@@ -1,0 +1,86 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>first example</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        .ms-controller {
+            visibility: hidden;
+        }
+    </style>
+</head>
+<body :controller="helloavalon" class="ms-controller">
+    <form>
+        <label>写了就变</label>
+        <input :duplex="##name" />
+        <p>Hello,{{##name}}！</p>
+
+        <input :duplex="##$unkeep" :on-input="click('$unkeep')" />
+
+        <ul>
+            <li :for="($index,el) in ##devices">
+                {{$index}}---{{el}} &gt;&gt;
+                <a href="javascript:;" :on-click="##devices.remove(el)">X</a>
+            </li>
+
+        </ul>
+
+        <ol>
+            <li :for="($index,el) in ##$skipArray">{{$index}}--{{el}}</li>
+        </ol>
+
+        <input type="submit" :on-click="##submit|prevent" value="提交" />
+    </form>
+    <script src="/vendor/avalon/avalon.js"></script>
+    <script type="text/javascript">
+        avalon.ready(function () {
+            var model = avalon.define({
+                $id: "helloavalon",
+                name: "大元宝",
+                devices: ["iPhone", "iMac", "Mac", "Mac Mini", "iTouch", "iPod", "iPad", "iWatch"],
+                $skipArray: ["aa", "bb", "cc", "dd"],
+                $unkeep: "我是不变的",
+                click: function (v) {
+                    var old = model[v];
+                    model.$fire(v, (new Date - 1), old);
+                },
+                submit:function(){
+                    var json = JSON.parse(JSON.stringify(model.$model));
+                    console.log(json);
+                }
+            });
+
+            model.$watch("name",function(a,b,c){
+                console.log(a);
+                console.log(b);
+                console.log(c);
+            });
+
+            model.$watch("$unkeep",function(a,b,c){
+                console.log(a);
+                console.log(b);
+                console.log(c);
+            });
+
+            avalon.scan(document.body);
+
+
+            //setTimeout(function () {
+            //    model.devices.reverse();
+            //}, 3000);
+
+            //setTimeout(function () {
+            //    model.$skipArray.reverse();
+            //}, 3000);
+
+            //setTimeout(function () {
+            //    console.log(model.devices.toJSON());
+            //}, 3000);
+
+        });
+
+    </script>
+</body>
+</html>
