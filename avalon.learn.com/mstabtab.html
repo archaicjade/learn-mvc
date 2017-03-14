@@ -1,0 +1,47 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <meta charset="utf-8" />
+    <style>
+        .ms-controller {
+            visibility: hidden;
+        }
+
+        .panel {
+            width: 80%;
+            height: 100px;
+            border: 1px solid #ccc;
+        }
+    </style>
+</head>
+<body>
+
+    <div :controller="test" class="ms-controller">
+        <button :for="($i,el) in ##array" :on-click="##tabClick($i)">{{$i}}</button>
+        <div class="panel" :for="($i,el) in ##array">
+            {{el.text}}
+        </div>
+    </div>
+
+    <script src="vendor/avalon/avalon.js"></script>
+    <script>
+        avalon.ready(function () {
+            avalon.define({
+                $id: "test",
+                array: [{ text: "11111111" }, { text: "222222" }, { text: "333333" }, { text: "44444" }],
+                currentIndex: 0,
+                tabClick: function (index) {
+                    this.currentIndex = index;
+                },
+                tab:function(i){
+                    return i == this.currentIndex;
+                }
+            });
+
+            avalon.scan(document.body);
+        });
+    </script>
+</body>
+</html>

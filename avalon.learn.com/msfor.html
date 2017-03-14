@@ -21,7 +21,7 @@
             </ol>
 
             <ol>
-                <li :for="(i,el) in ##array" data-for-rendered="##del($event,)">
+                <li :for="(i,el) in ##array" data-for-rendered="##del($event,##array[$index])">
                     <input type="button" :duplex="el" :on-click="##array.remove(el)" />
                 </li>
             </ol>

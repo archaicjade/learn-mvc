@@ -1,0 +1,40 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <meta charset="utf-8" />
+</head>
+<body :controller="test">
+
+    <div :on-click="##click('array')">
+        <div :for="el in ##array">{{el}}</div>
+    </div>
+
+    <script src="vendor/avalon/avalon.js"></script>
+    <script>
+        avalon.ready(function () {
+            var vm = avalon.define({
+                $id: "test",
+                array: [1, 2],
+                aaa: {
+                    bbb: {
+                        ccc: 1
+                    }
+                },
+                click:function(a){
+                    vm[a].push(new Date-0);
+                }
+            });
+            vm.$watch("##aaa.bbb.ccc", function (v) {
+                console.log(v);
+            });
+
+            setTimeout(function () {
+                vm.aaa.bbb.ccc = 200
+            }, 3000);
+            avalon.scan(document.body);
+        });
+    </script>
+</body>
+</html>

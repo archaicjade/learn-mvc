@@ -1,0 +1,69 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <meta charset="utf-8" />
+</head>
+<body :controller="test">
+    <p>
+        <select :duplex="##selected">
+            <option :for="el in ##options">
+                {{el}}
+            </option>
+        </select>
+
+        <select :duplex="##trend">
+            <option value="1">up</option>
+            <option value="-1">down</option>
+        </select>
+    </p>
+    <table width="500px" border="1">
+        <tr>
+            <th>name</th>
+            <th>size</th>
+            <th>date</th>
+        </tr>
+        <tr :for="el in ##data">
+            <td>{{el.name}}</td>
+            <td>{{el.size}}</td>
+            <td>{{el.date}}</td>
+        </tr>
+    </table>
+
+    <script src="vendor/avalon/avalon.js"></script>
+    <script>
+        avalon.ready(function () {
+            var vm = avalon.define({
+                $id: "test",
+                options: ["name", "size", "date"],
+                data: [{ name: "aaa", size: 213, date: Date.now() + 20 },
+                    { name: "bbb", size: 4576, date: Date.now() - 4 },
+                    { name: "ccc", size: 563, date: Date.now() - 7 },
+                    { name: "ddd", size: 3713, date: Date.now() + 9 },
+                    { name: "eee", size: 389, date: Date.now() - 20 }],
+                selected: "name",
+                trend: 1
+            });
+
+            vm.$watch("selected", function (v) {
+                var t = parseInt(vm.trend);
+                vm.data.sort(function (a, b) {
+                    var ret = a[v] > b[v] ? 1 : -1;
+                    return t * ret;
+                });
+            });
+
+            vm.$watch("trend", function (t) {
+                var v = vm.selected, t = parseInt(t);
+                vm.data.sort(function (a, b) {
+                    var ret = a[v] > b[v] ? 1 : -1;
+                    return t * ret;
+                })
+            });
+
+            avalon.scan(document.body);
+        });
+    </script>
+</body>
+</html>
