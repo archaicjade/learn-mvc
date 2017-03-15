@@ -16,7 +16,7 @@
         <legend>插值表达式</legend>
         <div :controller="vava" class="ms-controller">
             <p>{{##aaa}}{{##bbb}}</p>
-            <p>{{##aaa+##bbb}}</p:skip="true">
+            <p>{{##aaa+##bbb}}</p>
             <p>{{##aaa+##bbb|uppercase}}</p>
         </div>
 
@@ -26,13 +26,12 @@
         <legend>ms-skip</legend>
         <div :controller="vava" class="ms-controller">
             <p>{{##aaa}}{{##bbb}}</p>
-            <p :skip="true">{{##aaa+##bbb}}</p:skip="true">
+            <p :skip="true">{{##aaa+##bbb}}</p>
             <p>{{##aaa+##bbb|uppercase}}</p>
             <div :skip="true">
                 <p>{{##aaa}}</p>
             </div>
         </div>
-
     </fieldset>
 
     <fieldset>
@@ -49,7 +48,6 @@
                 </div>
             </div>
         </div>
-
     </fieldset>
 
 
@@ -67,28 +65,41 @@
                 </div>
             </div>
         </div>
-
     </fieldset>
 
     <fieldset>
         <legend>属性绑定</legend>
-        <div :controller="AAA" class="ms-controller">
-            <div>{{##name}}:{{##color}}</div>
-            <div :controller="BBB">
-                <div>{{##name}}:{{##color}}</div>
-                <div :important="CCC">
-                    <div>{{##name}}:{{##color}}</div>
-                </div>
-                <div :important="DDD">
-                    <div>{{##name}}:{{##color}}</div>
-                </div>
-            </div>
-        </div>
+        <p>
+            属性绑定用于为元素的节点添加一组属性，因此要求属性值为对象或数组形式，数组最后也会合并成一个对象，然后取次对象的键名为属性名，键值为属性值为元素添加属性
+        </p>
+        <p>
+            如果键名为for，char这样的关键字，请务必在两边加上引号；
+            如果键名带横杠-，请务必转换为驼峰风格，并在两边加上引号；
+        </p>
 
+        <p style="color:red">
+            &lt;p ms-attr="{style:'width:20px'}"&gt;这样写是错误的，需要用ms-css指令！！&lt;/p&gt;
+        </p>
+        <p style="color:red">
+            ms-attr指令的值不建议使用数组形式了！
+        </p>
+        <div :controller="attrlearn">
+            <span :attr="##obj">直接引用对象</span>
+            <img :attr="{src:##path}" />
+            <ul>
+                <li :for="el in ##arr">
+                    <a :attr="{href:'http://www.ccc.xxx/ddd/'+el.img}">下载</a>
+                </li>
+            </ul>
+            <span :attr="{width:##width,height:##height}">使用对象字面量</span><br />
+            <span :attr="##array">直接引用数组</span><br />
+            <span :attr="[##obj,##toggle && @active]" :on-click="##toggle=!##toggle">选择性添加多余属性或重写已有属性</span>
+        </div>
     </fieldset>
 
     <script src="../vendor/avalon/avalon.js"></script>
     <script type="text/javascript">
+        avalon.config({ debug: true });
         avalon.ready(function () {
 
             var model = avalon.define({
@@ -100,6 +111,18 @@
             BBB = avalon.define({ $id: "BBB", name: "b", color: "blue" }),
             CCC = avalon.define({ $id: "CCC", color: "black" }),
             DDD = avalon.define({ $id: "DDD", name: "d", });
+
+            var attr = avalon.define({
+                $id: "attrlearn",
+                obj: { title: '普通', align: 'left' },
+                active: { title: '激活' },
+                width: 111,
+                height: 222,
+                arr: [{ img: 'aaa' }, { img: 'bbb' }, { img: 'ccc' }],
+                path: '../aaa/image.jpg',
+                toggle: false,
+                array: [{ width: 1 }, { height: 2 }]
+            });
 
             avalon.scan(document.body);
         });
