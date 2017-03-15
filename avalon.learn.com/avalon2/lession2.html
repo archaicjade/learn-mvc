@@ -368,5 +368,39 @@
             toggle:false
         });
     </script>
+
+    <fieldset>
+        <legend>
+            循环绑定
+        </legend>
+
+        <p>avalon2.0的ms-for绑定集齐了ms-repeat，ms-each，ms-with的所有功能，并且更好用，性能提升了七八倍，ms-for可以同时循环对象与数组</p>
+
+        <p>现在采用类似angluar的语法，in前面如果只有一个变量，那么它就是数组元素或对象的属性名</p>
+
+        <p>ms-for还可以配套data-for-render回调，当列表渲染好时执行此方法</p>
+        <div :controller="forBind">
+            <ul>
+                <li :for="(aa,el) in ##aaa" data-for-rendered="##render('xxx',$event)">{{aa}}--{{el}}</li>
+            </ul>
+            <ul>
+                <li :for="(k,v) in ##bbb">{{k}}--{{v}}</li>
+            </ul>
+        </div>
+    </fieldset>
+
+    <script>
+        avalon.define({
+            $id:"forBind",
+            aaa:[1,2,3,4,5,6,'aa','bb',2.5],
+            bbb:{a:1,b:2,c:3},
+            render:function(other,e){
+                console.log(other);
+                console.log(e.type);
+                console.log(e.target.nodeName);
+                console.log(this);
+            }
+        });
+    </script>
 </body>
 </html>
