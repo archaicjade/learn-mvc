@@ -9,6 +9,8 @@
             visibility: hidden;
         }
     </style>
+    <script src="../vendor/avalon/avalon.js"></script>
+
 </head>
 <body>
 
@@ -67,6 +69,20 @@
         </div>
     </fieldset>
 
+    <script type="text/javascript">
+
+        var model = avalon.define({
+            $id: "vava",
+            aaa: "aaa",
+            bbb: "bbb"
+        }),
+        AAA = avalon.define({ $id: "AAA", name: "a", color: "red" }),
+        BBB = avalon.define({ $id: "BBB", name: "b", color: "blue" }),
+        CCC = avalon.define({ $id: "CCC", color: "black" }),
+        DDD = avalon.define({ $id: "DDD", name: "d", });
+
+    </script>
+
     <fieldset>
         <legend>属性绑定</legend>
         <p>
@@ -97,34 +113,259 @@
         </div>
     </fieldset>
 
-    <script src="../vendor/avalon/avalon.js"></script>
     <script type="text/javascript">
-        avalon.config({ debug: true });
-        avalon.ready(function () {
 
-            var model = avalon.define({
-                $id: "vava",
-                aaa: "aaa",
-                bbb: "bbb"
-            }),
-            AAA = avalon.define({ $id: "AAA", name: "a", color: "red" }),
-            BBB = avalon.define({ $id: "BBB", name: "b", color: "blue" }),
-            CCC = avalon.define({ $id: "CCC", color: "black" }),
-            DDD = avalon.define({ $id: "DDD", name: "d", });
+        var attr = avalon.define({
+            $id: "attrlearn",
+            obj: { title: '普通', align: 'left' },
+            active: { title: '激活' },
+            width: 111,
+            height: 222,
+            arr: [{ img: 'aaa' }, { img: 'bbb' }, { img: 'ccc' }],
+            path: '../aaa/image.jpg',
+            toggle: false,
+            array: [{ width: 1 }, { height: 2 }]
+        });
 
-            var attr = avalon.define({
-                $id: "attrlearn",
-                obj: { title: '普通', align: 'left' },
-                active: { title: '激活' },
-                width: 111,
-                height: 222,
-                arr: [{ img: 'aaa' }, { img: 'bbb' }, { img: 'ccc' }],
-                path: '../aaa/image.jpg',
-                toggle: false,
-                array: [{ width: 1 }, { height: 2 }]
-            });
+    </script>
 
-            avalon.scan(document.body);
+    <fieldset>
+        <legend>样式绑定</legend>
+        <p>
+            CSS绑定用于为元素的节点添加一组样式，因此要求属性值为对象或数组形式，数组最后也会合并成一个对象，然后取次对象的键名为样式名，键值为样式值为元素添加样式
+        </p>
+        <p>
+            如果键名为便是长度，字体大小这样的样式，那么键值不需要加单位，会自动加上px；
+            如果键名为float，请务必在两边加上引号；
+            如果键名为font-size，请务必转换为驼峰风格或两边加上引号；
+        </p>
+        <p style="color:red">
+            ms-cssbaidu指令的值不建议使用数组形式了！
+        </p>
+        <div :controller="csslearn">
+            <div :css="##obj">直接引用对象</div>
+            <div :css="{width:##width,height:##height,background:'pink'}">直接使用对象字面量</div>
+            <div :css="##array">直接引用数组</div>
+            <div :css="[##obj,##toggle && ##active]" :on-click="##toggle=!##toggle">选择性添加多余属性或重写已有属性</div>
+        </div>
+    </fieldset>
+
+    <script type="text/javascript">
+
+        var cssBind = avalon.define({
+            $id:"csslearn",
+            obj:{backgroundColor:'#3bb0d0',width:300,height:50,'text-align':'center'},//属性名带-，必须用引号括起
+            active:{color:'red'},
+            width:300,
+            height:60,
+            toggle:true,
+            array:[{width:100},{height:50},{border:'1px solid #5cb85c'}]
+        });
+
+
+    </script>
+    <fieldset>
+        <legend>文本绑定</legend>
+        <p>
+            文本绑定是最简单的绑定，它其实是双花括号插值表达式的一种形式
+        </p>
+        <p>它要求VM对应的属性的类型为字符串，数值及布尔，如果是null，undefined将会被转换为空字符串</p>
+
+        <div :controller="textBind">
+            <p><span :text="##aaa">不是用过滤器</span></p>
+            <p><span :text="##aaa | uppercase">使用过滤器</span></p>
+        </div>
+    </fieldset>
+
+    <script type="text/javascript">
+        var textBind = avalon.define({
+            $id:"textBind",
+            aaa:"Big Ball"
+        });
+
+    </script>
+
+    <fieldset>
+        <legend>HTML绑定</legend>
+
+        <p>
+            HTML绑定类似文本绑定，能将一个元素清空，填上你需要的内容
+            它要求VN对应的属性的类型为字符串
+        </p>
+
+        <div :controller="htmllearn">
+            <p><span :html="##aaa">不使用过滤器</span></p>
+            <p><span :html="##aaa | uppercase">不使用过滤器</span></p>
+
+            <div :html="##aaa"></div>
+        </div>
+    </fieldset>
+
+    <script type="text/javascript">
+        var htmlBind = avalon.define({
+            $id:"htmllearn",
+            aaa:"loading..."
+        });
+        //jQuery.ajax({
+        //    url:"action.do",
+        //    success:function(data){
+        //        vm.aaa = data.html;
+        //    }
+        //});
+
+        setTimeout(function(){
+            htmlBind.aaa = "<a href=\"javascript:alert('hello world')\">这是一个链接</a>";
+        },5000)
+    </script>
+    <style>
+        .aaa {
+            color: red;
+        }
+
+        .ddd {
+            color: blue;
+        }
+    </style>
+    <fieldset>
+        <legend>类名绑定</legend>
+        <p>属性绑定用于为元素节点添加几个类名，因此要求属性值为字符串或字符串数组</p>
+        <p>字符串形式下，可以使用空格隔开多个类名</p>
+        <p>字符串数组形式下，可以在里面使用三元运算或与或号</p>
+        <div :controller="classbind">
+            <p><span :class="##aaa">直接使用字符串</span></p>
+            <p><span :class="##ccc">直接引用数组</span></p>
+            <p><span :class="[##aaa,##bbb]">使用数组字面量</span></p>
+            <p><span :class="['aaa','bbb',(##toggle?'ccc':'ddd')]" :on-click="##toggle = !##toggle">选择性添加类名</span></p>
+            <p><span :class="[##toggle2 && 'aaa']" :on-click="##toggle2=!##toggle2">选择性添加类名</span></p>
+            <p><span :class="[##ddd + 4]">动态生成类名</span></p>
+        </div>
+    </fieldset>
+    <script>
+        var classBind = avalon.define({
+            $id:"classbind",
+            aaa:"aaa bbb ccc",
+            bbb:"ddd",
+            ccc:['xxx','yyy','zzz'],
+            ddd:'eee',
+            toggle:true,
+            toggle2:false
+        });
+    </script>
+
+    <fieldset>
+        <legend>Active绑定</legend>
+
+        <p>为元素添加：active效果，当元素被点击时添加几个类名，鼠标弹起后则立即移除</p>
+        <div :controller="activeBind">
+            <p><span :active="##aaa">直接使用字符串</span></p>
+            <p><span :active="##ccc">直接引用数组</span></p>
+            <p><span :active="[##aaa,##bbb]">使用数组字面量</span></p>
+            <p><span :active="['aaa','bbb',(##toggle?'ccc':'ddd')]">选择性添加类名</span></p>
+            <p><span :active="[##toggle2 && 'aaa']">选择性添加类名</span></p>
+            <p><span :active="[##ddd + 4]">动态生成类名</span></p>
+        </div>
+    </fieldset>
+    <script type="text/javascript">
+        var activeBind = avalon.define({
+            $id:"activeBind",
+            aaa:"aaa bbb ccc",
+            bbb:"ddd",
+            ccc:['xxx','yyy','zzz'],
+            ddd:'eee',
+            toggle:true,
+            toggle2:false
+        });
+    </script>
+
+    <fieldset>
+        <legend>Hover绑定</legend>
+
+        <p>用于类实现：hove伪类的效果，当用户鼠标移动移动元素上方时添加几个类名，鼠标移走时将刚才的类名移除</p>
+        <div :controller="hoverBind">
+            <p><span :hover="##aaa">直接使用字符串</span></p>
+            <p><span :hover="##ccc">直接引用数组</span></p>
+            <p><span :hover="[##aaa,##bbb]">使用数组字面量</span></p>
+            <p><span :hover="['aaa','bbb',(##toggle?'ccc':'ddd')]">选择性添加类名</span></p>
+            <p><span :hover="[##toggle2 && 'aaa']">选择性添加类名</span></p>
+            <p><span :hover="[##ddd + 4]">动态生成类名</span></p>
+        </div>
+    </fieldset>
+
+    <script type="text/javascript">
+        var hoverBind = avalon.define({
+            $id:"hoverBind",
+            aaa:"aaa bbb ccc",
+            bbb:"ddd",
+            ccc:['xxx','yyy','zzz'],
+            ddd:'eee',
+            toggle:true,
+            toggle2:false
+        });
+    </script>
+
+    <fieldset>
+        <legend>ms-if绑定</legend>
+        <p>
+            通过属性值决定是否渲染目标元素，为否时原位置上变成一个注释节点
+            avalon1.*中ms-if-loop指令已经被废弃，请使用limitBy,selectBy,filterBy过滤器替代相应功能
+        </p>
+        <div :controller="test1">
+            <input type="button" :on-click="##toggle = !##toggle" value="显隐按钮" />
+            <div :if="##toggle">{{##aaa}}</div>
+        </div>
+        <p>注意，有许多人喜欢用ms-if做非空处理，这是不对的，因此ms-if只是决定它是否插入DOM树与否，ms-if里面的ms-指令还是会执行</p>
+
+        <div :controller="test2">
+            <div>{{##aaa.bbb.ccc}}这里肯定会出错</div>
+        </div>
+
+        <p>
+            正确的做法是，当你知道这里面有非空判断，需要用方法包起来
+        </p>
+
+        <div :controller="test3">
+            <div :if="##aaa.bbb">
+                {{##show(##aaa,'bbb','ccc')}}
+            </div>
+        </div>
+    </fieldset>
+    <script>
+        avalon.define({
+            $id:"test1",
+            aaa:"你猜我是谁？",
+            toggle:false
+        });
+        //avalon.define({
+        //    $id:"test2",
+        //    aaa:{}
+        //});
+        avalon.define({
+            $id:"test3",
+            aaa:{bbb:{},ccc:"show me ccc"},
+            show:function(aaa,bbb,ccc){
+                if(aaa[bbb]){
+                    return aaa[ccc];
+                }
+                return '';
+            }
+        });
+    </script>
+
+    <fieldset>
+        <legend>可见性绑定</legend>
+        <div :controller="visibleBind">
+            <p>
+                <input type="button" value="点我" :on-click="##toggle=!##toggle" />
+
+                <div :visible="##toggle">{{##aaa}}</div>
+            </p>
+        </div>
+    </fieldset>
+    <script>
+        avalon.define({
+            $id:"visibleBind",
+            aaa:"这是被隐藏的内容",
+            toggle:false
         });
     </script>
 </body>
