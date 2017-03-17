@@ -1,0 +1,73 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <meta charset="utf-8" />
+
+    <script src="../vendor/avalon/avalon.js"></script>
+</head>
+<body>
+
+    <fieldset>
+        <legend>事件绑定</legend>
+        <p>使用形式ms-on-*="xxx"，*代表事件名称，xxx是事件回调本身,可以是方法名或表达式</p>
+        <p>
+            默认，事件回调的第一个参数是事件对象，并进行了标准化处理。如果你是用ms-on-click=“@fn(el,1)”这样的方式，第一个参数被你占用，而你又想用事件对象，
+            可以使用$event标识符，即 ms-on-click="@fn(el,1,$event)"，那么第三个参数就是事件对象。
+        </p>
+        <p>
+            如果你想绑定多个点击事件，可以用ms-on-click-1="@fn(el)", ms-on-click-2="@fn2(el)"，ms-on-click-3="@fn(el)"来添加。
+            并且，avalon对常用的事件，还做了快捷处理，你可以省掉中间的on。
+        </p>
+        <p>this是指向vm，元素本身可以直接从e.target中取得.</p>
+        <p style="color:red;font-weight:700">
+            ms-on-*会优先考虑使用事件代理方式绑定事件，将事件绑定在根节点上！这会带来极大的性能优化！
+            ms-on-*的值转换为函数后，如果发现其内部不存在ms-for动态生成的变量，框架会将他们缓存起来！
+            添加了一系列针对事件的过滤器，对按键进行限制的过滤器esc，tab，enter，space，del，up，left，right，down
+            对事件方法stopPropagation，preventDefault进行简化的过滤器stop，prevent。
+        </p>
+        <div :controller="test">
+            <div :mouseenter="##callback" :mouseleave="##callback">
+                <p>{{##status}}</p>
+                <input :on-input="##check" />
+                {{##field}}
+            </div>
+            <div :on-click="##argsClick($event,100,##firstName)">玷污</div>
+            <div :for="el in ##array">
+                <p :on-click="##loopClick(el,$event)">{{el}}</p>
+            </div>
+            <input :on-click="##submit" type="button" value="点我" />
+        </div>
+    </fieldset>
+    <script type="text/javascript">
+        var vm = avalon.define({
+            $id: "test",
+            firstName: "司徒",
+            array: ["aaa", "bbb", "ccc"],
+            argsClick: function (e, a, b) {
+                alert([].slice.call(arguments).join(" "));
+            },
+            loopClick: function (a, e) {
+                alert(a + " " + e.type);
+            },
+            status: "",
+            callback: function (e) {
+                vm.status = e.type;
+            },
+            field: "",
+            check: function (e) {
+                vm.field = e.target.value + " " + e.type;
+            },
+            submit: function () {
+                var data = vm.$model;
+                if (window.JSON) {
+                    setTimeout(function () {
+                        alert(JSON.stringify(data));
+                    });
+                }
+            }
+        });
+    </script>
+</body>
+</html>

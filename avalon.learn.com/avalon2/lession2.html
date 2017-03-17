@@ -148,6 +148,9 @@
             <div :css="##array">直接引用数组</div>
             <div :css="[##obj,##toggle && ##active]" :on-click="##toggle=!##toggle">选择性添加多余属性或重写已有属性</div>
         </div>
+        <p>需要注意的是 设置背景图片是比较复杂</p>
+        <span :css="{background:'url('+##imageUrl+') no-repeat center center;'}">背景图片需要用连字符</span>
+        <span :css="{backgroundImage:'url('+##imageUrl+')'}">背景图片需要用连字符</span>
     </fieldset>
 
     <script type="text/javascript">
@@ -386,14 +389,65 @@
             <ul>
                 <li :for="(k,v) in ##bbb">{{k}}--{{v}}</li>
             </ul>
+            <p>
+                如果想截取数组的一部分出来单独循环，可以用limitBy过滤器，使用as来引用新数组
+            </p>
+            <ul>
+                <li :for="el in ##aaa | limitBy(10) as items">{{el}}</li>
+            </ul>
+            <p>
+                使用注释节点实现循环，解决同时循环多个元素的问题
+            </p>
+            <div>
+                <!--ms-for: el in ##aaa | limitBy(3) as items-->
+                <p>{{el}}</p>
+                <p>{{el}}</p>
+                <!--ms-for-end:-->
+            </div>
+            <p>如果你只想循环输出数组的其中一部分，请使用filterBy；</p>
+            <p>如果只想循环输出对象某一些键值并设置默认值，则用selectBy；</p>
+            <p>不要在同一个元素上使用ms-for与ms-if，因为这样做会在页面上生成大量的注释节点，影响页面性能；</p>
+            <p>可用于ms-for中的过滤器有limitBy，filterBy，selectBy，orderBy</p>
+
+            <fieldset>
+                <legend>循环嵌套</legend>
+                <p>二维数组</p>
+                <table :css="{width:##styles.width,height:##styles.height,borderColor:##styles.borderColor,borderStyle:##styles.borderStyle}">
+                    <tr :for="(i,el) in ##aaa2">
+                        <td :for="elem in el.arr">
+                            {{i}}+{{elem}}
+                        </td>
+                    </tr>
+                </table>
+            </fieldset>
+
+            <fieldset>
+                <legend>如何双向绑定ms-for中生成的变量？</legend>
+                <p>由于循环生成的变量前面不带@，因此就找不到其对应的属性，需要特别处理一下</p>
+                <div :for="(key,el) in ##styles">
+                    <label>{{key}}::{{el}}</label>
+                    <input type="text" :duplex="##styles[key]" />
+                    不能ms-duplex="el"
+                </div>
+            </fieldset>
         </div>
+
     </fieldset>
 
     <script>
-        avalon.define({
+        var formodel = avalon.define({
             $id:"forBind",
             aaa:[1,2,3,4,5,6,'aa','bb',2.5],
             bbb:{a:1,b:2,c:3},
+            aaa2:[{arr:[1,2,3]},{arr:[2,3,4]},{arr:['a','b','c']}],
+            styles:{
+                width:200,
+                height:200,
+                borderWidth:1,
+                borderColor:"red",
+                borderStyle:"solid",
+                backgroundColor:"gray"
+            },
             render:function(other,e){
                 console.log(other);
                 console.log(e.type);
