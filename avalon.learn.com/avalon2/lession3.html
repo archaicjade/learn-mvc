@@ -98,7 +98,99 @@
 </script>
 
 <fieldset>
-    <legend></legend>
+    <legend>回调执行顺序的例子</legend>
+    <div :controller="test2" :on-mouseenter-3="##fn1" :on-mouseenter-2="##fn2" :on-mouseenter-1="##fn3"
+         style="width: 100px;height: 100px;background: red;"></div>
 </fieldset>
+
+<script type="text/javascript">
+    var vm2 = avalon.define({
+
+        $id: "test2",
+        fn1: function () {
+            console.log("111111");
+        },
+        fn2: function () {
+            console.log("222222");
+        },
+        fn3: function () {
+            console.log("333333");
+        }
+    });
+</script>
+<style>
+
+    .aaa {
+        background: #2959ba;
+        width: 240px;
+        height: 240px;
+        padding: 20px;
+        box-sizing: content-box;
+    }
+
+    .bbb {
+        background: #1ba9ba;
+        width: 200px;
+        height: 200px;
+        padding: 20px;
+        box-sizing: content-box;
+    }
+
+    .ccc {
+        background: #168795;
+        width: 160px;
+        text-align: center;
+        line-height: 160px;
+        height: 160px;
+        margin: 20px;
+        box-sizing: content-box;
+    }
+</style>
+<fieldset>
+    <legend>avalon已经对ms-mouseenter, ms-mouseleave进行修复，可以在这里与这里了解这两个事件。 到chrome30时，所有浏览器都原生支持这两个事件。</legend>
+    <div class="aaa" :controller="test3">
+        <div class="bbb" :on-mouseenter="##fn1" :on-mouseleave="##fn2">
+            <div class="ccc">{{##text}}</div>
+        </div>
+
+    </div>
+</fieldset>
+<script type="text/javascript">
+    var vn3 = avalon.define({
+
+        $id: "test3",
+        text: "",
+        fn1: function (e) {
+            this.text = e.target.className + " " + e.type;
+        },
+        fn2: function (e) {
+            this.text = e.target.className + " " + e.type;
+        }
+    });
+</script>
+
+<fieldset>
+    <legend>
+        最后是mousewheel事件的修改，主要问题是出现firefox上， 它死活也不愿意支持mousewheel，在avalon里是用DOMMouseScroll或wheel实现模拟的。
+        我们在事件对象通过wheelDelta属性是否为正数判定它在向上滚动。
+
+    </legend>
+
+    <div ms-controller="event4">
+        <div ms-on-mousewheel="##callback" id="aaa" style="background: #1ba9ba;width:200px;height: 200px;">
+            {{@text}}
+        </div>
+    </div>
+</fieldset>
+
+<script type="text/javascript">
+    var vm4 = avalon.define({
+        $id: "event4",
+        text: "",
+        callback: function (e) {
+            this.text = e.wheelDelta + "  " + e.type
+        }
+    })
+</script>
 </body>
 </html>
