@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>双工绑定</title>
+    <script src="../vendor/avalon/avalon.js"></script>
+</head>
+<body>
+
+
+<fieldset>
+    <legend>
+        双工绑定是MVVM框架中最强大的指令.react推崇单向数据流,没有双工绑定, 那么需要rudex等额外的库来实现相同的功能.
+
+        双工绑定只要用于表单元素上.或当一个div设置了contenteditable为true,也可以用ms-duplex指令.
+    </legend>
+
+    <div ms-controller="test">
+        <script>
+            avalon.define({
+                $id: 'test',
+                aaa: 'aaa',
+                bbb: 'bbb',
+                ccc: 'ccc'
+            })
+
+        </script>
+
+        <input ms-duplex="##aaa"/>{{##aaa}}
+        <input ms-duplex="##bbb" type="password"/>{{##bbb}}
+        <textarea ms-duplex="##ccc"/></textarea>{{##ccc}}
+    </div>
+</fieldset>
+</body>
+</html>
