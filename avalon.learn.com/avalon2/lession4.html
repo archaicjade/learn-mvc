@@ -250,5 +250,35 @@
             ]
         });
     </script>
+
+    <fieldset>
+        <legend>
+            文本域与下拉框的联动例子，它只是用到ms-duplex，不过两个控件都是绑定同一个属性。
+        </legend>
+        <div ms-controller="fruit">
+            <h3>文本域与下拉框联动</h3>
+            <input ms-duplex="##selected" />
+            <select ms-duplex="##selected">
+                <option ms-for="el in ##data" ms-attr="{value:el}">{{el}}</option>
+            </select>
+        </div>
+    </fieldset>
+
+    <script>
+        avalon.define({
+            $id: "fruit",
+            data: ["苹果", "香蕉", "桃子", "雪梨", "葡萄", "哈密瓜", "橙子", "火龙果", "荔枝"],
+            selected: "荔枝"
+        });
+    </script>
+
+    <fieldset>
+        <legend>
+            下拉框三级联动
+        </legend>
+        <div>
+            <h3>下拉框三级联动</h3>
+        </div>
+    </fieldset>
 </body>
 </html>
