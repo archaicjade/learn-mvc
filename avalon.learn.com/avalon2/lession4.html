@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -8,28 +8,247 @@
 <body>
 
 
-<fieldset>
-    <legend>
-        双工绑定是MVVM框架中最强大的指令.react推崇单向数据流,没有双工绑定, 那么需要rudex等额外的库来实现相同的功能.
+    <fieldset>
+        <legend>
+            双工绑定是MVVM框架中最强大的指令.react推崇单向数据流,没有双工绑定, 那么需要rudex等额外的库来实现相同的功能.
 
-        双工绑定只要用于表单元素上.或当一个div设置了contenteditable为true,也可以用ms-duplex指令.
-    </legend>
+            双工绑定只要用于表单元素上.或当一个div设置了contenteditable为true,也可以用ms-duplex指令.
+        </legend>
 
-    <div ms-controller="test">
-        <script>
-            avalon.define({
-                $id: 'test',
-                aaa: 'aaa',
-                bbb: 'bbb',
-                ccc: 'ccc'
-            })
+        <div ms-controller="test">
+            <script>
+                avalon.define({
+                    $id: 'test',
+                    aaa: 'aaa',
+                    bbb: 'bbb',
+                    ccc: 'ccc'
+                })
 
-        </script>
+            </script>
 
-        <input ms-duplex="##aaa"/>{{##aaa}}
-        <input ms-duplex="##bbb" type="password"/>{{##bbb}}
-        <textarea ms-duplex="##ccc"/></textarea>{{##ccc}}
+            <input ms-duplex="##aaa" />{{##aaa}}
+            <input ms-duplex="##bbb" type="password" />{{##bbb}}
+            <textarea ms-duplex="##ccc" /></textarea>{{##ccc}}
+        </div>
+    </fieldset>
+
+    <fieldset>
+        <legend>
+            我们可以让vm的属性值等于此控件的勾选状态，这时需要用上ms-duplex-checked转换器。
+        </legend>
+        <div ms-controller="test5">
+            <input type="radio" ms-duplex-checked="##aaa" />
+            <input type="checkbox" ms-duplex-checked="##bbb" />
+
+            <p>radio:{{##aaa}};checkbox:{{##bbb}}</p>
+        </div>
+
+    </fieldset>
+    <script type="text/javascript">
+        avalon.define({
+            $id: "test5",
+            aaa: false,
+            bbb: true
+        });
+    </script>
+
+    <fieldset>
+        <legend>
+            select空间，它根据其multiple属性分为单选下拉框与复选下拉框，其在vm中的值与radio，checkbox一样，即单选时，必须是一个简单数据类型
+            ，复选时为一个数组，在最开始时，当option元素的value值或innerText（不在value值）与数据相同时，他们就会被选上
+        </legend>
+    </fieldset>
+
+    <div ms-controller="test6">
+        <select ms-duplex="##aaa">
+            <option>aaa</option>
+            <option>bbb</option>
+            <option>ccc</option>
+        </select>
+
+        <select multiple="true" ms-duplex="##bbb">
+            <option>aaa</option>
+            <option>bbb</option>
+            <option>ccc</option>
+        </select>
+
+        <p>selecta:{{##aaa}}; selectb:{{##bbb}}</p>
     </div>
-</fieldset>
+
+    <script type="text/javascript">
+        avalon.define({
+            $id: "test6",
+            aaa: "aaa",
+            bbb: ["bbb", "ccc"]
+        });
+    </script>
+
+    <fieldset>
+        <legend>数据转换</legend>
+
+        <div>
+            <ol>
+                <li>ms-duplex-string</li>
+                <li>ms-duplex-number</li>
+                <li>ms-duplex-boolean</li>
+                <li>ms-duplex-checked</li>
+            </ol>
+            <p>
+                前三个是将元素的value值转换成string,number,boolean（只有为'false'时转换为false）
+                最后是根据当前元素（它只能是radio或checkbox）的checked属性值转换为vm对应属性的值。
+                他们都是放在属性名上。当数据从元素节点往vmode同步时，转换成预期的数据。
+            </p>
+        </div>
+    </fieldset>
+
+    <fieldset>
+        <legend>数据格式化</legend>
+
+        <div>
+            &lt;input type="text" value="11" ms-duplex="##aaa | uppercase" /&gt;
+            <p>这里有一个隐患，可能导致死循环，因此建议放在事件回调中实现</p>
+
+            <div ms-controller="test7">
+                <input ms-duplex="##aaa" ms-on-input="##format1" />{{##aaa}}
+                <input ms-duplex="##bbb" ms-on-change="##format2" />{{##bbb}}
+                <input ms-duplex="##ccc | uppercase" />
+            </div>
+        </div>
+    </fieldset>
+    <script type="text/javascript">
+        var vm = avalon.define({
+            $id: "test7",
+            aaa: "111",
+            bbb: "222",
+            ccc: "aa",
+            format1: function (e) {
+                vm.aaa = e.target.value.replace(/\D/g, '');
+            },
+            format2: function (e) {
+                vm.bbb = avalon.filters.date(e.target.value, "yyyy-MM-dd");
+            }
+        });
+    </script>
+
+    <fieldset>
+        <legend>数据验证</legend>
+        <div ms-controller="test8">
+            <form ms-validate="##validation">
+                <input ms-duplex="##aaa" ms-rules="require,email,maxlength" data-maxlength="4" data-maxlength-message="太长了" />
+            </form>
+        </div>
+    </fieldset>
+    <script>
+        avalon.define({
+            $id: "test8",
+            aaa: ""
+        })
+    </script>
+
+    <fieldset>
+        <legend>
+            同步后的回调
+
+        </legend>
+        <p>
+            ms-duplex还有一个回调，data-duplex-changed，用于与事件绑定一样，默认第一个参数为事件对象。如果传入多个参数，那么使用$event事件对象占位。
+
+        </p>
+        <p>
+            &lt; value="11" ms-duplex-number="##aaa" data-duplex-changed="##fn" /&gt;
+        </p>
+
+        <div>
+            <table ms-controller="invoke1" border="1">
+                <tr>
+                    <td>
+                        <input type="checkbox" ms-duplex-checked="##allchecked" data-duplex-changed="##checkAll" />全选
+                    </td>
+                </tr>
+                <tr ms-for="($index, el) in ##data">
+                    <td>
+                        <input type="checkbox" ms-duplex-checked="el.checked" data-duplex-changed="##checkOne" />
+                        {{$index}}--{{el.checked}}
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </fieldset>
+
+    <script>
+        var invoke1 = avalon.define({
+            $id: "invoke1",
+            data: [{ checked: false }, { checked: false }, { checked: false }],
+            allchecked: false,
+            checkAll: function (e) {
+                var checked = e.target.checked;
+                invoke1.data.forEach(function (el) {
+                    el.checked = checked;
+                })
+            },
+            checkOne: function (e) {
+                var checked = e.target.checked;
+                if (checked === false) {
+                    invoke1.allchecked = false;
+                } else {
+                    invoke1.allchecked = invoke1.data.every(function (el) { return el.checked; });
+                }
+            }
+        });
+    </script>
+
+    <fieldset>
+        <legend>
+            结合循环做一个表格，有了强大无比的orderBy，limitBy，filterBy，selectBy。可以做高性能的大表格。
+        </legend>
+        <div ms-controller="duplex2">
+
+            <div style="color:red">
+                <p>本例用于显示如何做一个简单的表格排序</p>
+            </div>
+
+            <p>
+                <select ms-duplex="##selected">
+                    <option ms-for="el in ##options">{{el}}</option>
+                </select>
+
+                <select ms-duplex-number="##trend">
+                    <option value="1">up</option>
+                    <option value="-1">down</option>
+                </select>
+            </p>
+
+            <table width="500px" border="1">
+                <tbody>
+                    <tr ms-for="el in ##data | orderBy(##selected,##trend)">
+                        <td>{{el.name}}</td>
+                        <td>{{el.size}}</td>
+                        <td>{{el.date}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </fieldset>
+
+    <script type="text/javascript">
+        if (!Date.now) {
+            Date.now = function () {
+                return new Date - 0;
+            }
+        }
+        avalon.define({
+            $id: "duplex2",
+            selected: "name",
+            options: ["name", "size", "date"],
+            trend: 1,
+            data: [
+                { name: "aaa", size: 213, date: Date.now() + 20 },
+                { name: "bbb", size: 4567, date: Date.now() - 4 },
+                { name: "ccc", size: 123, date: Date.now() + 5 },
+                { name: "eee", size: 342, date: Date.now() - 1 },
+                { name: "555", size: 1111, date: Date.now() - 20 },
+            ]
+        });
+    </script>
 </body>
 </html>
