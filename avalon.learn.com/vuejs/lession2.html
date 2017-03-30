@@ -1,0 +1,79 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <meta charset="utf-8" />
+
+    <script src="../vendor/vuejs/vue.min.js"></script>
+</head>
+<body>
+
+    <div id="app">
+        <p>Original message:"{{message}}"</p>
+        <p>Computed reversed message:"{{reverseMessage}}"</p>
+        <p>Computed reversed message:"{{reverseMessage2()}}"</p>
+    </div>
+
+    <div id="demo">
+        {{fullName}}
+        <p>
+            {{firstName}}
+        </p>
+        <p>
+            {{lastName}}
+        </p>
+    </div>
+
+    <script>
+        var vm = new Vue({
+            el: "#app",
+            data: {
+                message: "you block me on facebook!"
+            },
+            computed: {
+                reverseMessage: function () {
+                    return this.message.split(' ').reverse().join(' ') + new Date();
+                }
+            },
+            methods: {
+                reverseMessage2: function () {
+                    return this.message.split(' ').reverse().join(' ') + new Date();
+                }
+            }
+        });
+
+        var vvm = new Vue({
+            el: "#demo",
+            data: {
+                firstName: 'Foo',
+                lastName: 'Bar',
+                fullName: 'Foo Bar'
+            },
+            //watch: {
+            //    firstName: function (val) {
+            //        this.fullName = val + ' ' + this.lastName;
+            //    },
+            //    lastName: function (val) {
+            //        this.fullName = this.firstName + ' ' + val;
+            //    }
+            //},
+            computed: {
+                //fullName: function () {
+                //    return this.firstName + ' ' + this.lastName
+                //}
+                fullName: {
+                    get: function () {
+                        return this.firstName + ' ' + this.lastName;
+                    },
+                    set: function (val) {
+                        var name = val.split(' ');
+                        this.firstName = name[0];
+                        this.lastName = name[name.length - 1];
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
