@@ -1,0 +1,50 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <meta charset="utf-8" />
+    <script src="../vendor/avalon/avalon.js"></script>
+</head>
+<body>
+    <fieldset>
+        <legend>
+            自定义标签
+        </legend>
+
+        <p>
+            以ms-开头的自定义标签, 我们需要用avalon.component方法定义它,然后在里面使用ms-widget指令 为它添加更多行为.
+        </p>
+
+        <p>
+            avalon.component方法有两个参数,第一个标签名,必须以ms-开头;第二个是配置对象
+        </p>
+
+        <p>配置对象里也有4个配置项</p>
+
+        <ol>
+            <li>template,自定义标签的outerHTML,它必须是用一个普通的HTML元素节点包起来,里面可以使用<code>ms-*</code>等指令</li>
+            <li>defaults,用来定义这个组件的VM有什么属性与方法</li>
+            <li>soleSlot,表示自定义标签的innerHTML为一个默认的插入点 (或可理解为定义标签的innerHTML为当前组件某个属性的属性值) ,可选</li>
+            <li>getTemplate, 用来修改template, 依次传入vm与template, 返回新的模板. 可选</li>
+        </ol>
+
+        <pre><code class="lang-javascript">    avalon.component(<span class="hljs-string">'ms-pager'</span>, {
+      template: <span class="hljs-string">'&lt;div&gt;&lt;input type="text" ms-duplex-number="@num"/&gt;&lt;button type="button" ms-on-click="@onPlus"&gt;+++&lt;/button&gt;&lt;/div&gt;'</span>,
+      defaults: {
+          num: <span class="hljs-number">1</span>,
+          onPlus: <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+        <span class="hljs-keyword">this</span>.num++;
+          }
+      },
+      getTemplate: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">vm, template</span>)</span>{
+        <span class="hljs-keyword">return</span> template.replace(<span class="hljs-string">'ms-on-click'</span>,<span class="hljs-string">'ms-on-mousenter'</span>)
+      }
+  });
+</code></pre>
+        <blockquote>
+            <p>注意,在avalon2中是严禁在绑定属性中混入插值表达式 </p>
+        </blockquote>
+    </fieldset>
+</body>
+</html>

@@ -1,0 +1,78 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <meta charset="utf-8" />
+    <script src="../vendor/avalon/avalon.js"></script>
+</head>
+<body>
+    <fieldset>
+        <legend>
+            组件
+        </legend>
+
+        <p>
+            avalon拥有两大利器，强大的组件化功能以应对复杂墙问题，顶级的虚拟DOM机制来解决性能墙问题。
+        </p>
+
+        <p>
+            组件容器是一个占位用的元素节点. 当avalon扫描到此位置上时将它替换成组件.
+
+            在avalon2中有4类标签可以用作组件容器,分别是wbr, xmp, template, 及ms-开头的自定义标签.
+        </p>
+
+
+        <table>
+            <thead>
+                <tr>
+                    <th style="text-align:left">元素</th>
+                    <th>类型</th>
+                    <th>说明</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="text-align:left">wbr</td>
+                    <td>所有浏览器, 自闭合标签</td>
+                    <td>需要使用ms-widget或is来指定组件类型</td>
+                </tr>
+                <tr>
+                    <td style="text-align:left">xmp</td>
+                    <td>所有浏览器, 闭合标签</td>
+                    <td>需要使用ms-widget或is来指定组件类型,里面可以使用slot属性元素</td>
+                </tr>
+                <tr>
+                    <td style="text-align:left">template</td>
+                    <td>IE9+及W3C浏览器,闭合标签</td>
+                    <td>需要使用ms-widget或is来指定组件类型,里面可以使用slot属性元素</td>
+                </tr>
+                <tr>
+                    <td style="text-align:left">ms-*</td>
+                    <td>IE9+及W3C浏览器,闭合标签</td>
+                    <td>可以省略ms-widget, 里面可以使用slot属性元素</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <p>
+            闭合标签，比如<code>&lt;div&gt;&lt;/div&gt;&lt;a&gt;&lt;/a&gt;</code>
+            自闭合标签，比如<code>&lt;input&gt;&lt;img&gt;&lt;br&gt;&lt;link&gt;</code>
+        </p>
+        <p>根据上表, 如果要兼容IE6-8, 那么只能使用wbr, xmp来做组件容器</p>
+
+        <p>如果不打算支持IE, 那么使用template元素性能最好</p>
+
+        <p>如果追求语义化, 只支持IE9+及其他现代浏览器,则使用ms-*自定义标签.</p>
+
+        <p>xmp元素里面不能放xmp, template元素里面不能放template,这是html规范,就像script元素里面不能放script, textarea元素里面不能放textarea. 但我们可以在这些元素里面直接放ms-*自定义标签.</p>
+
+        <pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">xmp</span> <span class="hljs-attr">ms-widget</span>=<span class="hljs-string">"{is:'ms-dialog'}"</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">wbr</span> <span class="hljs-attr">is</span>=<span class="hljs-string">"ms-star"</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">ms-title</span> <span class="hljs-attr">slot</span>=<span class="hljs-string">"title"</span>&gt;</span>{{@title}}<span class="hljs-tag">&lt;/<span class="hljs-name">ms-title</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">xmp</span>&gt;</span>
+</code></pre>
+
+    </fieldset>
+</body>
+</html>
