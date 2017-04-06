@@ -39,6 +39,58 @@
             <span>Checked names:{{checkedNames}}</span>
         </div>
     </fieldset>
+
+    <fieldset>
+        <legend>单选框</legend>
+        <div id="example_4">
+            <input type="radio" id="one" value="One" v-model="picked" />
+            <label for="one">One</label>
+            <br />
+            <input type="radio" id="two" value="Two" v-model="picked" />
+            <label for="two">Two</label>
+            <br />
+            <span>Picked:{{picked}}</span>
+        </div>
+    </fieldset>
+
+    <fieldset>
+        <legend>单选列表</legend>
+        <div id="example_5">
+            <select v-model="selected">
+                <option>A</option>
+                <option>B</option>
+                <option>C</option>
+            </select>
+            <span>Selected:{{selected}}</span>
+        </div>
+    </fieldset>
+
+    <fieldset>
+        <legend>多选列表</legend>
+        <div id="example_6">
+            <select v-model="selected" multiple style="width:50px">
+                <option>A</option>
+                <option>B</option>
+                <option>C</option>
+            </select>
+            <span>Selected:{{selected}}</span>
+        </div>
+    </fieldset>
+
+    <fieldset>
+        <legend>动态渲染</legend>
+
+        <div id="example_7">
+            <select v-model="selected">
+                <option v-for="option in options" v-bind:value="option.value">{{option.text}}</option>
+            </select>
+            <span>Selected:{{selected}}</span>
+        </div>
+    </fieldset>
+
+    <p>有时我们想绑定value到Vue实例的一个动态属性上，这时可以用v-bind实现，并且这个属性的值可以不是字符串</p>
+
+
     <script>
         var example_1 = new Vue({
             el: "#example_1",
@@ -58,6 +110,39 @@
             el: "#example_3",
             data: {
                 checkedNames: []
+            }
+        });
+
+        var example_4 = new Vue({
+            el: "#example_4",
+            data: {
+                picked: ''
+            }
+        });
+
+        var example_5 = new Vue({
+            el: "#example_5",
+            data: {
+                selected: null
+            }
+        });
+
+        var example_6 = new Vue({
+            el: "#example_6",
+            data: {
+                selected: []
+            }
+        });
+
+        var example_7 = new Vue({
+            el: "#example_7",
+            data: {
+                selected: 'A',
+                options: [
+                    { text: 'One', value: 'A' },
+                { text: 'Two', value: 'B' },
+                { text: 'Three', value: 'C' }
+                ]
             }
         });
     </script>
