@@ -1,0 +1,65 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <meta charset="utf-8" />
+    <script src="../vendor/vuejs/vue.min.js"></script>
+</head>
+<body>
+
+    <fieldset>
+        <legend>表单控件绑定</legend>
+
+
+        <div id="example_1">
+            <input type="text" v-model="message" placeholder="edit me" />
+            <p>Message is:{{message}}</p>
+        </div>
+
+        <div id="example_2">
+
+            <span>Multiline message is:</span>
+            <p style="white-space:pre">{{message}}</p>
+            <textarea v-model="message" placeholder="add multiple lines"></textarea>
+        </div>
+        <p>在文本域使用插值表达式（&lt;textarea&gt;{{message}}&lt;/textarea&gt;）并不会生效，应用v-model来代替</p>
+    </fieldset>
+
+    <fieldset>
+        <legend>复选框</legend>
+        <div id="example_3">
+            <label for="checkbox1">checkbox1</label>
+            <input type="checkbox" id="checkbox1" v-model="checkedNames" value="1" />
+            <label for="checkbox2">checkbox2</label>
+            <input type="checkbox" id="checkbox2" v-model="checkedNames" value="2" />
+            <label for="checkbox3">checkbox3</label>
+            <input type="checkbox" id="checkbox3" v-model="checkedNames" value="3wo" />
+            <br />
+            <span>Checked names:{{checkedNames}}</span>
+        </div>
+    </fieldset>
+    <script>
+        var example_1 = new Vue({
+            el: "#example_1",
+            data: {
+                message: ""
+            }
+        });
+
+        var example_2 = new Vue({
+            el: "#example_2",
+            data: {
+                message: ""
+            }
+        });
+
+        var example_3 = new Vue({
+            el: "#example_3",
+            data: {
+                checkedNames: []
+            }
+        });
+    </script>
+</body>
+</html>

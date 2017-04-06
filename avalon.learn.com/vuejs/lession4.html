@@ -1,0 +1,89 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <meta charset="utf-8" />
+    <script src="../vendor/vuejs/vue.min.js"></script>
+</head>
+<body>
+    <fieldset>
+        <legend>列表渲染</legend>
+        <p>
+            基本用法
+        </p>
+        <ul id="example_1">
+            <li v-for="item in items">
+                {{item.message}}
+            </li>
+        </ul>
+        <p>带索引</p>
+        <ul id="example_2">
+            <li v-for="(item,index) in items">{{parentMessage}}-{{index}}-{{item.message}}</li>
+        </ul>
+        <p>模板</p>
+        <ul id="example_3">
+            <template v-for="item in items">
+                <li>{{item.message}}</li>
+                <li class="divider">
+
+                </li>
+            </template>
+        </ul>
+
+        <p>对象迭代</p>
+
+        <ul id="repeatObject" class="demo">
+            <li v-for="(value,key,index) in object">
+                {{key}}:{{value}}:{{index}}
+            </li>
+        </ul>
+
+        <p>整数迭代</p>
+        <p>在这种情况下，它将重复多次模板</p>
+
+        <div id="example_4">
+            <span v-for="n in 10">{{n}}</span>
+        </div>
+    </fieldset>
+
+    <script>
+        var example_1 = new Vue({
+            el: "#example_1",
+            data: {
+                items: [{ message: "Foo" }, { message: "Bar" }]
+            }
+        });
+
+        var example_2 = new Vue({
+            el: "#example_2",
+            data: {
+                parentMessage: "Parent",
+                items: [{ message: "Foo" }, { message: "Bar" }]
+            }
+        });
+
+        var example_3 = new Vue({
+            el: "#example_3",
+            data: {
+                parentMessage: "Parent",
+                items: [{ message: "Foo" }, { message: "Bar" }]
+            }
+        });
+
+        var example_4 = new Vue({
+            el: "#example_4"
+        });
+        var repeatObject = new Vue({
+            el: "#repeatObject",
+            data: {
+                object: {
+                    FirstName: 'John',
+                    LastName: 'Doe',
+                    Age: 30
+                }
+            }
+        });
+    </script>
+</body>
+</html>
