@@ -342,6 +342,148 @@
                 });
             </script>
         </fieldset>
+        <h4 id="给组件绑定原生事件"><a href="#给组件绑定原生事件" class="headerlink" title="给组件绑定原生事件"></a>给组件绑定原生事件</h4>
+        <p>有时候，你可能想在某个组件的根元素上监听一个原生事件。可以使用 <code>.native</code> 修饰 <code>v-on</code> 。例如：</p>
+        <figure class="highlight html"><table><tbody><tr><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">my-component</span> <span class="attr">v-on:click.native</span>=<span class="string">"doTheThing"</span>&gt;</span><span class="tag">&lt;/<span class="name">my-component</span>&gt;</span></div></pre></td></tr></tbody></table></figure>
+    </fieldset>
+
+    <fieldset>
+        <legend>
+            使用自定义事件的表单输入组件
+        </legend>
+        <p>自定义事件可以用来创建自定义的表单输入组件，使用 <code>v-model</code> 来进行数据双向绑定。看看这个：</p>
+        <figure class="highlight html"><table><tbody><tr><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">v-model</span>=<span class="string">"something"</span>&gt;</span></div></pre></td></tr></tbody></table></figure>
+
+        <p>这不过是以下示例的语法糖：</p>
+        <figure class="highlight html"><table><tbody><tr><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">v-bind:value</span>=<span class="string">"something"</span> <span class="attr">v-on:input</span>=<span class="string">"something = $event.target.value"</span>&gt;</span></div></pre></td></tr></tbody></table></figure>
+        <p>所以要让组件的 <code>v-model</code> 生效，它必须：</p>
+        <ul>
+            <li>接受一个 <code>value</code> 属性</li>
+            <li>在有新的 value 时触发 <code>input</code> 事件</li>
+        </ul>
+        <p>我们来看一个非常简单的货币输入的自定义控件：</p>
+        <figure class="highlight html"><table><tbody><tr><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">currency-input</span> <span class="attr">v-model</span>=<span class="string">"price"</span>&gt;</span><span class="tag">&lt;/<span class="name">currency-input</span>&gt;</span></div></pre></td></tr></tbody></table></figure>
+        <figure class="highlight js"><table><tbody><tr><td class="code"><pre><div class="line">Vue.component(<span class="string">'currency-input'</span>, {</div><div class="line">  <span class="attr">template</span>: <span class="string">'\</span></div><div class="line">    &lt;span&gt;\</div><div class="line">      $\</div><div class="line">      &lt;input\</div><div class="line">        ref="input"\</div><div class="line">        v-bind:value="value"\</div><div class="line">        v-on:input="updateValue($event.target.value)"\</div><div class="line">      &gt;\</div><div class="line">    &lt;/span&gt;\</div><div class="line">  ',</div><div class="line">  <span class="attr">props</span>: [<span class="string">'value'</span>],</div><div class="line">  <span class="attr">methods</span>: {</div><div class="line">    <span class="comment">// 不是直接更新值，而是使用此方法来对输入值进行格式化和位数限制</span></div><div class="line">    updateValue: <span class="function"><span class="keyword">function</span> (<span class="params">value</span>) </span>{</div><div class="line">      <span class="keyword">var</span> formattedValue = value</div><div class="line">        <span class="comment">// 删除两侧的空格符</span></div><div class="line">        .trim()</div><div class="line">        <span class="comment">// 保留 2 小数位</span></div><div class="line">        .slice(<span class="number">0</span>, value.indexOf(<span class="string">'.'</span>) + <span class="number">3</span>)</div><div class="line">      <span class="comment">// 如果值不统一，手动覆盖以保持一致</span></div><div class="line">      <span class="keyword">if</span> (formattedValue !== value) {</div><div class="line">        <span class="keyword">this</span>.$refs.input.value = formattedValue</div><div class="line">      }</div><div class="line">      <span class="comment">// 通过 input 事件发出数值</span></div><div class="line">      <span class="keyword">this</span>.$emit(<span class="string">'input'</span>, <span class="built_in">Number</span>(formattedValue))</div><div class="line">    }</div><div class="line">  }</div><div class="line">})</div></pre></td></tr></tbody></table></figure>
+
+        <div id="example_9" class="demo">
+            <currency-input v-model="price"></currency-input>
+        </div>
+        <script type="text/javascript">
+            Vue.component('currency-input', {
+                template: '<span>$<input ref="input" v-bind:value="value" v-on:input="updateValue($event.target.value)" /></span>',
+                props: ['value'],
+                methods: {
+                    updateValue: function (value) {
+                        var formattedValue = value.trim().slice(0, value.indexOf('.') + 3)
+                        if (formattedValue !== value) {
+                            this.$refs.input.value = formattedValue
+                        }
+                        this.$emit('input', Number(formattedValue))
+                    }
+                }
+            });
+
+            var example_9 = new Vue({
+                el: '#example_9',
+                data: {
+                    price: 0
+                }
+            })
+        </script>
+
+
+        <script src="https://cdn.rawgit.com/chrisvfritz/5f0a639590d6e648933416f90ba7ae4e/raw/98739fb8ac6779cb2da11aaa9ab6032e52f3be00/currency-validator.js"></script>
+
+        <div id="app">
+            <currency-input label="Price"
+                            v-model="price"></currency-input>
+            <currency-input label="Shipping"
+                            v-model="shipping"></currency-input>
+            <currency-input label="Handling"
+                            v-model="handling"></currency-input>
+            <currency-input label="Discount"
+                            v-model="discount"></currency-input>
+
+            <p>Total: ${{ total }}</p>
+        </div>
+
+        <script type="text/javascript">
+            Vue.component('currency-input', {
+                template: '\
+    <div>\
+      <label v-if="label">{{ label }}</label>\
+      $\
+      <input\
+        ref="input"\
+        v-bind:value="value"\
+        v-on:input="updateValue($event.target.value)"\
+        v-on:focus="selectAll"\
+        v-on:blur="formatValue"\
+      >\
+    </div>\
+  ',
+                props: {
+                    value: {
+                        type: Number,
+                        default: 0
+                    },
+                    label: {
+                        type: String,
+                        default: ''
+                    }
+                },
+                mounted: function () {
+                    this.formatValue()
+                },
+                methods: {
+                    updateValue: function (value) {
+                        var result = currencyValidator.parse(value, this.value)
+                        if (result.warning) {
+                            this.$refs.input.value = result.value
+                        }
+                        this.$emit('input', result.value)
+                    },
+                    formatValue: function () {
+                        this.$refs.input.value = currencyValidator.format(this.value)
+                    },
+                    selectAll: function (event) {
+                        // Workaround for Safari bug
+                        // http://stackoverflow.com/questions/1269722/selecting-text-on-focus-using-jquery-not-working-in-safari-and-chrome
+                        setTimeout(function () {
+                            event.target.select()
+                        }, 0)
+                    }
+                }
+            })
+
+            new Vue({
+                el: '#app',
+                data: {
+                    price: 0,
+                    shipping: 0,
+                    handling: 0,
+                    discount: 0
+                },
+                computed: {
+                    total: function () {
+                        return ((
+                          this.price * 100 +
+                          this.shipping * 100 +
+                          this.handling * 100 -
+                          this.discount * 100
+                        ) / 100).toFixed(2)
+                    }
+                }
+            })
+        </script>
+    </fieldset>
+    <fieldset>
+        <legend>非父子组件通信</legend>
+        <p>有时候两个组件也需要通信(非父子关系)。在简单的场景下，可以使用一个空的 Vue 实例作为中央事件总线：</p>
+        <figure class="highlight js"><table><tbody><tr><td class="code"><pre><div class="line"><span class="keyword">var</span> bus = <span class="keyword">new</span> Vue()</div></pre></td></tr></tbody></table></figure>
+        <figure class="highlight js"><table><tbody><tr><td class="code"><pre><div class="line"><span class="comment">// 触发组件 A 中的事件</span></div><div class="line">bus.$emit(<span class="string">'id-selected'</span>, <span class="number">1</span>)</div></pre></td></tr></tbody></table></figure>
+        <figure class="highlight js"><table><tbody><tr><td class="code"><pre><div class="line"><span class="comment">// 在组件 B 创建的钩子中监听事件</span></div><div class="line">bus.$on(<span class="string">'id-selected'</span>, <span class="function"><span class="keyword">function</span> (<span class="params">id</span>) </span>{</div><div class="line">  <span class="comment">// ...</span></div><div class="line">})</div></pre></td></tr></tbody></table></figure>
+        <p>在复杂的情况下，我们应该考虑使用专门的 <a href="state-management.html">状态管理模式</a>.</p>
     </fieldset>
 </body>
 </html>
