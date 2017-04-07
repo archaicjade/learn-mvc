@@ -1,11 +1,347 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title></title>
-	<meta charset="utf-8" />
+    <meta charset="utf-8" />
+    <script src="../vendor/vuejs/vue.min.js"></script>
 </head>
 <body>
+    <fieldset>
+        <legend>
+            注册和使用组件
+        </legend>
 
+        <p>全局注册</p>
+        <div id="example_1">
+            <v-componet></v-componet>
+        </div>
+
+        <p>局部注册</p>
+        <div id="example_2">
+            <v-component2></v-component2>
+        </div>
+
+        <script type="text/javascript">
+            Vue.component("v-componet", {
+                template: '<div>A custom componet!</div>'
+            });
+
+            var example_1 = new Vue({
+                el: "#example_1"
+            });
+
+            var childTemp = {
+                template: '<div style="width:200px;color:red;"><p>这是一个局部注册组件</p></div>'
+            };
+
+            var example_2 = new Vue({
+                el: '#example_2',
+                components: {
+                    'v-component2': childTemp
+                }
+            });
+        </script>
+    </fieldset>
+
+    <fieldset>
+        <legend>
+            DOM 模板解析说明
+            当使用DOM作为模板时，会受到HTML的一些限制。
+        </legend>
+
+        <p>
+            例如：
+            &lt;table&gt;
+            &lt;my-row&gt;&lt;/my-row&gt;
+            &lt;/table&gt;
+        </p>
+        <p>自定义组件被认为是无效的内容，因此在渲染的时候会导致错误。变通的方案是使用特殊的is属性</p>
+        <p>
+            &lt;table&gt;
+            &lt;tr is="my-row"&gt;&lt;/tr&gt;
+            &lt;/table&gt;
+        </p>
+
+        <p>
+            应当注意，如果使用来自以下来源之一的字符串模板，这些限制将不适应：
+        </p>
+        <ul>
+            <li>&lt;script type="text/x-template"&gt;&lt;/script&gt;</li>
+            <li>JavaScript内联模板字符串</li>
+            <li>.Vue 组件</li>
+        </ul>
+    </fieldset>
+
+    <fieldset>
+        <legend>data 必须是函数</legend>
+
+        <p>通过Vue构造器传入的各种选项大多数都可以在组件里用。data是一个例外，它必须是函数。实际上，如果你这么做：</p>
+        <figure class="highlight js">
+            <table>
+                <tbody>
+                    <tr>
+                        <td class="code"><pre><div class="line">Vue.component(<span class="string">'my-component'</span>, {</div><div class="line">  <span class="attr">template</span>: <span class="string">'&lt;span&gt;{{ message }}&lt;/span&gt;'</span>,</div><div class="line">  <span class="attr">data</span>: {</div><div class="line">    <span class="attr">message</span>: <span class="string">'hello'</span></div><div class="line">  }</div><div class="line">})</div></pre></td>
+                    </tr>
+                </tbody>
+            </table>
+        </figure>
+
+        <p>那么 Vue 会停止，并在控制台发出警告，告诉你在组件中 <code>data</code> 必须是一个函数。理解这种规则的存在意义很有帮助，让我们假设用如下方式来绕开Vue的警告：</p>
+
+        <div id="example_3">
+            <s_count></s_count>
+            <s_count></s_count>
+            <s_count></s_count>
+        </div>
+
+        <p>由于这三个组件共享了同一个data，因此增加一个counter会影响所有组件！，这不对。我们可以通过为每个组件返回全新的data对象来解决这个问题。</p>
+
+        <div id="example_4">
+            <s_count2></s_count2>
+            <s_count2></s_count2>
+            <s_count2></s_count2>
+        </div>
+
+        <script type="text/javascript">
+
+            var data = { counter: 0 };
+
+            Vue.component("s_count", {
+
+                template: '<button v-on:click="counter += 1">{{counter}}</button>',
+                //技术上 data 的确是一个函数了，因此 Vue 不会警告，
+                //但是我们返回给每个数组的实例却引用了同一个data对象
+                data: function () {
+                    return data;
+                }
+            });
+
+            var example_3 = new Vue({
+                el: '#example_3'
+            });
+
+            Vue.component("s_count2", {
+
+                template: '<button v-on:click="counter += 1">{{counter}}</button>',
+                //技术上 data 的确是一个函数了，因此 Vue 不会警告，
+                //但是我们返回给每个数组的实例却引用了同一个data对象
+                data: function () {
+                    return { counter: 0 }
+                }
+            });
+
+            var example_4 = new Vue({
+                el: '#example_4'
+            });
+        </script>
+    </fieldset>
+
+    <fieldset>
+        <legend>
+            构成组件
+        </legend>
+        <p>组件意味着协同工作，通常父子组件会是这样的关系：组件 A 在它的模版中使用了组件 B 。它们之间必然需要相互通信：父组件要给子组件传递数据，子组件需要将它内部发生的事情告知给父组件。然而，在一个良好定义的接口中尽可能将父子组件解耦是很重要的。这保证了每个组件可以在相对隔离的环境中书写和理解，也大幅提高了组件的可维护性和可重用性。</p>
+        <p>在 Vue.js 中，父子组件的关系可以总结为 <strong>props down, events up</strong> 。父组件通过 <strong>props</strong> 向下传递数据给子组件，子组件通过 <strong>events</strong> 给父组件发送消息。看看它们是怎么工作的。</p>
+        <p style="text-align: center"><br>  <img style="width:300px" src="http://cn.vuejs.org/images/props-events.png" alt="props down, events up"><br></p>
+    </fieldset>
+
+
+    <fieldset>
+        <legend>
+            Prop
+        </legend>
+
+        <fieldset>
+            <legend>使用Prop传递数据</legend>
+
+            <p>组件实例的作用域是<strong>孤立的</strong>。这意味着不能(也不应该)在子组件的模板内直接引用父组件的数据。要让子组件使用父组件的数据，我们需要通过子组件的props选项。</p>
+
+            <p>子组件要显式地用 <a href="../api/#props"><code>props</code> 选项</a>声明它期待获得的数据：</p>
+
+            <figure class="highlight js"><table><tbody><tr><td class="code"><pre><div class="line">Vue.component(<span class="string">'child'</span>, {</div><div class="line">  <span class="comment">// 声明 props</span></div><div class="line">  props: [<span class="string">'message'</span>],</div><div class="line">  <span class="comment">// 就像 data 一样，prop 可以用在模板内</span></div><div class="line">  <span class="comment">// 同样也可以在 vm 实例中像 “this.message” 这样使用</span></div><div class="line">  template: <span class="string">'&lt;span&gt;{{ message }}&lt;/span&gt;'</span></div><div class="line">})</div></pre></td></tr></tbody></table></figure>
+
+            <div id="example_5">
+                <vc_child message="hello!"></vc_child>
+            </div>
+
+            <script type="text/javascript">
+
+                Vue.component("vc_child", {
+                    props: ['message'],
+                    template: '<span>{{message}}</span>'
+                });
+
+                var example_5 = new Vue({
+                    el: "#example_5"
+                })
+            </script>
+        </fieldset>
+
+
+        <fieldset>
+            <legend>camelCase vs. kebab-case</legend>
+            <p>HTML 特性是不区分大小写的。所以，当使用的不是字符串模版，camelCased (驼峰式) 命名的 prop 需要转换为相对应的 kebab-case (短横线隔开式) 命名：</p>
+            <figure class="highlight js"><table><tbody><tr><td class="code"><pre><div class="line">Vue.component(<span class="string">'child'</span>, {</div><div class="line">  <span class="comment">// camelCase in JavaScript</span></div><div class="line">  props: [<span class="string">'myMessage'</span>],</div><div class="line">  <span class="attr">template</span>: <span class="string">'&lt;span&gt;{{ myMessage }}&lt;/span&gt;'</span></div><div class="line">})</div></pre></td></tr></tbody></table></figure>
+            <figure class="highlight html"><table><tbody><tr><td class="code"><pre><div class="line"><span class="comment">&lt;!-- kebab-case in HTML --&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">child</span> <span class="attr">my-message</span>=<span class="string">"hello!"</span>&gt;</span><span class="tag">&lt;/<span class="name">child</span>&gt;</span></div></pre></td></tr></tbody></table></figure>
+            <p>如果你使用字符串模版，则没有这些限制。</p>
+            <div id="example_6">
+                <vc-child my-message="hello!"></vc-child>
+            </div>
+
+            <script type="text/javascript">
+                Vue.component("vc-child", {
+                    // camelCase in JavsScript
+                    props: ['myMessage'],
+                    template: '<span>{{myMessage}}</span>'
+                });
+
+                var example_6 = new Vue({
+                    el: "#example_6"
+                });
+            </script>
+        </fieldset>
+
+        <fieldset>
+            <legend>动态 prop</legend>
+            <p>在模板中，要动态地绑定父组件的数据到子模板的props，与绑定到任何普通的HTML特性相类似，就是用 <code>v-bind</code>。每当父组件的数据变化时，该变化也会传导给子组件：</p>
+            <figure class="highlight html"><table><tbody><tr><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">div</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">input</span> <span class="attr">v-model</span>=<span class="string">"parentMsg"</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">br</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">child</span> <span class="attr">v-bind:my-message</span>=<span class="string">"parentMsg"</span>&gt;</span><span class="tag">&lt;/<span class="name">child</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></div></pre></td></tr></tbody></table></figure>
+            <p>使用 <code>v-bind</code> 的缩写语法通常更简单：</p>
+            <figure class="highlight html"><table><tbody><tr><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">child</span> <span class="attr">:my-message</span>=<span class="string">"parentMsg"</span>&gt;</span><span class="tag">&lt;/<span class="name">child</span>&gt;</span></div></pre></td></tr></tbody></table></figure>
+
+            <div id="example_7">
+                <input v-model="parentMsg">
+                <br>
+                <vc-child2 v-bind:my-message="parentMsg"></vc-child2>
+            </div>
+
+            <script type="text/javascript">
+                Vue.component("vc-child2", {
+                    props: ['myMessage'],
+                    template: '<span>{{myMessage}}</span>'
+                });
+
+                var example_7 = new Vue({
+                    el: '#example_7',
+                    data: {
+                        parentMsg: 'message from parent'
+                    }
+                });
+            </script>
+        </fieldset>
+
+        <fieldset>
+            <legend>字面量语法vs动态语法</legend>
+            <p>初学者常犯的一个错误是使用字面量语法传递数值：</p>
+            <figure class="highlight html"><table><tbody><tr><td class="code"><pre><div class="line"><span class="comment">&lt;!-- 传递了一个字符串"1" --&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">comp</span> <span class="attr">some-prop</span>=<span class="string">"1"</span>&gt;</span><span class="tag">&lt;/<span class="name">comp</span>&gt;</span></div></pre></td></tr></tbody></table></figure>
+            <p>因为它是一个字面 prop ，它的值是字符串 <code>"1"</code> 而不是number。如果想传递一个实际的number，需要使用 <code>v-bind</code> ，从而让它的值被当作 JavaScript 表达式计算：</p>
+            <figure class="highlight html"><table><tbody><tr><td class="code"><pre><div class="line"><span class="comment">&lt;!-- 传递实际的mumber --&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">comp</span> <span class="attr">v-bind:some-prop</span>=<span class="string">"1"</span>&gt;</span><span class="tag">&lt;/<span class="name">comp</span>&gt;</span></div></pre></td></tr></tbody></table></figure>
+        </fieldset>
+        <fieldset>
+            <legend>单向数据流</legend>
+            <p>prop 是单向绑定的：当父组件的属性变化时，将传导给子组件，但是不会反过来。这是为了防止子组件无意修改了父组件的状态——这会让应用的数据流难以理解。</p>
+            <p>另外，每次父组件更新时，子组件的所有 prop 都会更新为最新值。这意味着你<strong>不应该</strong>在子组件内部改变 prop 。如果你这么做了，Vue 会在控制台给出警告。</p>
+            <p>为什么我们会有修改prop中数据的冲动呢？通常是这两种原因：</p>
+            <ol>
+                <li>
+                    <p>prop 作为初始值传入后，子组件想把它当作局部数据来用；</p>
+                </li>
+                <li>
+                    <p>prop 作为初始值传入，由子组件处理成其它数据输出。</p>
+                </li>
+            </ol>
+            <p>对这两种原因，正确的应对方式是：</p>
+            <ol>
+                <li>
+                    <p>定义一个局部变量，并用 prop 的值初始化它：</p>
+                    <figure class="highlight js"><table><tbody><tr><td class="code"><pre><div class="line">props: [<span class="string">'initialCounter'</span>],</div><div class="line"><span class="attr">data</span>: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>{</div><div class="line">  <span class="keyword">return</span> { <span class="attr">counter</span>: <span class="keyword">this</span>.initialCounter }</div><div class="line">}</div></pre></td></tr></tbody></table></figure>
+                </li>
+                <li>
+                    <p>定义一个计算属性，处理 prop 的值并返回。</p>
+                    <figure class="highlight js"><table><tbody><tr><td class="code"><pre><div class="line">props: [<span class="string">'size'</span>],</div><div class="line"><span class="attr">computed</span>: {</div><div class="line">  <span class="attr">normalizedSize</span>: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>{</div><div class="line">    <span class="keyword">return</span> <span class="keyword">this</span>.size.trim().toLowerCase()</div><div class="line">  }</div><div class="line">}</div></pre></td></tr></tbody></table></figure>
+                </li>
+            </ol>
+            <p class="tip">注意在 JavaScript 中对象和数组是引用类型，指向同一个内存空间，如果 prop 是一个对象或数组，在子组件内部改变它<strong>会影响</strong>父组件的状态。</p>
+        </fieldset>
+
+        <fieldset>
+            <legend>Prop验证</legend>
+            <p>我们可以为组件的 props 指定验证规格。如果传入的数据不符合规格，Vue 会发出警告。当组件给其他人使用时，这很有用。</p>
+            <p>要指定验证规格，需要用对象的形式，而不能用字符串数组：</p>
+            <figure class="highlight js"><table><tbody><tr><td class="code"><pre><div class="line">Vue.component(<span class="string">'example'</span>, {</div><div class="line">  <span class="attr">props</span>: {</div><div class="line">    <span class="comment">// 基础类型检测 （`null` 意思是任何类型都可以）</span></div><div class="line">    propA: <span class="built_in">Number</span>,</div><div class="line">    <span class="comment">// 多种类型</span></div><div class="line">    propB: [<span class="built_in">String</span>, <span class="built_in">Number</span>],</div><div class="line">    <span class="comment">// 必传且是字符串</span></div><div class="line">    propC: {</div><div class="line">      <span class="attr">type</span>: <span class="built_in">String</span>,</div><div class="line">      <span class="attr">required</span>: <span class="literal">true</span></div><div class="line">    },</div><div class="line">    <span class="comment">// 数字，有默认值</span></div><div class="line">    propD: {</div><div class="line">      <span class="attr">type</span>: <span class="built_in">Number</span>,</div><div class="line">      <span class="attr">default</span>: <span class="number">100</span></div><div class="line">    },</div><div class="line">    <span class="comment">// 数组／对象的默认值应当由一个工厂函数返回</span></div><div class="line">    propE: {</div><div class="line">      <span class="attr">type</span>: <span class="built_in">Object</span>,</div><div class="line">      <span class="attr">default</span>: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>{</div><div class="line">        <span class="keyword">return</span> { <span class="attr">message</span>: <span class="string">'hello'</span> }</div><div class="line">      }</div><div class="line">    },</div><div class="line">    <span class="comment">// 自定义验证函数</span></div><div class="line">    propF: {</div><div class="line">      <span class="attr">validator</span>: <span class="function"><span class="keyword">function</span> (<span class="params">value</span>) </span>{</div><div class="line">        <span class="keyword">return</span> value &gt; <span class="number">10</span></div><div class="line">      }</div><div class="line">    }</div><div class="line">  }</div><div class="line">})</div></pre></td></tr></tbody></table></figure>
+            <p><code>type</code> 可以是下面原生构造器：</p>
+            <ul>
+                <li>String</li>
+                <li>Number</li>
+                <li>Boolean</li>
+                <li>Function</li>
+                <li>Object</li>
+                <li>Array</li>
+            </ul>
+            <p><code>type</code> 也可以是一个自定义构造器函数，使用 <code>instanceof</code> 检测。</p>
+            <p>当 prop 验证失败，Vue会在抛出警告 (如果使用的是开发版本)。</p>
+        </fieldset>
+    </fieldset>
+
+    <fieldset>
+        <legend>自定义事件</legend>
+        <p>我们知道，父组件是使用props传递数据给子组件，但如果子组件要把数据传递回去，应该怎样做？那就是自定义事件！</p>
+
+        <fieldset>
+            <legend>
+                使用 v-on 绑定自定义事件
+            </legend>
+
+            每个Vue实例都实现了时间接口(Events interface)，即：
+            <ol>
+                <li>使用$on(eventName)监听事件</li>
+                <li>使用$emit(eventName)触发事件</li>
+            </ol>
+            <p class="tip">Vue的事件系统分离自浏览器的<a href="https://developer.mozilla.org/en-US/docs/Web/API/EventTarget" target="_blank" rel="external">EventTarget API</a>。尽管它们的运行类似，但是<code>$on</code> 和 <code>$emit</code> <strong>不是</strong><code>addEventListener</code> 和 <code>dispatchEvent</code> 的别名。</p>
+            <p>另外，父组件可以在使用子组件的地方直接用 <code>v-on</code> 来监听子组件触发的事件。</p>
+            <p class="tip">不能用<code>$on</code>侦听子组件抛出的事件，而必须在模板里直接用<code>v-on</code>绑定，就像以下的例子：</p>
+            <p>下面是一个例子：</p>
+            <figure class="highlight html"><table><tbody><tr><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"counter-event-example"</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">p</span>&gt;</span>{{ total }}<span class="tag">&lt;/<span class="name">p</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">button-counter</span> <span class="attr">v-on:increment</span>=<span class="string">"incrementTotal"</span>&gt;</span><span class="tag">&lt;/<span class="name">button-counter</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">button-counter</span> <span class="attr">v-on:increment</span>=<span class="string">"incrementTotal"</span>&gt;</span><span class="tag">&lt;/<span class="name">button-counter</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></div></pre></td></tr></tbody></table></figure>
+            <figure class="highlight js"><table><tbody><tr><td class="code"><pre><div class="line">Vue.component(<span class="string">'button-counter'</span>, {</div><div class="line">  <span class="attr">template</span>: <span class="string">'&lt;button v-on:click="increment"&gt;{{ counter }}&lt;/button&gt;'</span>,</div><div class="line">  <span class="attr">data</span>: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>{</div><div class="line">    <span class="keyword">return</span> {</div><div class="line">      <span class="attr">counter</span>: <span class="number">0</span></div><div class="line">    }</div><div class="line">  },</div><div class="line">  <span class="attr">methods</span>: {</div><div class="line">    <span class="attr">increment</span>: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>{</div><div class="line">      <span class="keyword">this</span>.counter += <span class="number">1</span></div><div class="line">      <span class="keyword">this</span>.$emit(<span class="string">'increment'</span>)</div><div class="line">    }</div><div class="line">  },</div><div class="line">})</div><div class="line"></div><div class="line"><span class="keyword">new</span> Vue({</div><div class="line">  <span class="attr">el</span>: <span class="string">'#counter-event-example'</span>,</div><div class="line">  <span class="attr">data</span>: {</div><div class="line">    <span class="attr">total</span>: <span class="number">0</span></div><div class="line">  },</div><div class="line">  <span class="attr">methods</span>: {</div><div class="line">    <span class="attr">incrementTotal</span>: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>{</div><div class="line">      <span class="keyword">this</span>.total += <span class="number">1</span></div><div class="line">    }</div><div class="line">  }</div><div class="line">})</div></pre></td></tr></tbody></table></figure>
+
+            <div id="example_8">
+                <p>
+                    {{total}}
+                </p>
+                <input type="text" v-model="parentMsg" placeholder="输入的内容会传到子组件中作为提示" />
+                <vc-button v-on:increment="incrementTotal" v-bind:title="parentMsg"></vc-button>
+                <vc-button v-on:increment="incrementTotal" v-bind:title="parentMsg"></vc-button>
+            </div>
+
+            <script type="text/javascript">
+                Vue.component("vc-button", {
+                    props: ["title"],
+                    template: '<div><input v-on:click="increment" type="button" v-bind:value="counter" /><span>{{title}}</span></div>',
+                    data: function () {
+                        return { counter: 0 }
+                    },
+                    methods: {
+                        increment: function () {
+                            this.counter++;
+                            this.$emit('increment');
+                        }
+                    }
+                });
+
+                var example_8 = new Vue({
+                    el: '#example_8',
+                    data: {
+                        parentMsg: '',
+                        total: 0
+                    },
+                    methods: {
+                        incrementTotal: function () {
+                            this.total++;
+                        }
+                    }
+                });
+            </script>
+        </fieldset>
+    </fieldset>
 </body>
 </html>
