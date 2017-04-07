@@ -119,6 +119,37 @@
                 });
             </script>
         </fieldset>
+
+        <fieldset>
+            <legend>作用域插槽</legend>
+            <blockquote>
+                <p>2.1.0 新增</p>
+            </blockquote>
+            <p>作用域插槽是一种特殊类型的插槽，用作使用一个（能够传递数据到）可重用模板替换已渲染元素。</p>
+            <p>在子组件中，只需将数据传递到插槽，就像你将 prop 传递给组件一样：</p>
+            <figure class="highlight html"><table><tbody><tr><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"child"</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">slot</span> <span class="attr">text</span>=<span class="string">"hello from child"</span>&gt;</span><span class="tag">&lt;/<span class="name">slot</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></div></pre></td></tr></tbody></table></figure>
+            <p>在父级中，具有特殊属性 <code>scope</code> 的 <code>&lt;template&gt;</code> 元素，表示它是作用域插槽的模板。<code>scope</code> 的值对应一个临时变量名，此变量接收从子组件中传递的 prop 对象：</p>
+            <figure class="highlight html"><table><tbody><tr><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"parent"</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">child</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">template</span> <span class="attr">scope</span>=<span class="string">"props"</span>&gt;</span></div><div class="line">      <span class="tag">&lt;<span class="name">span</span>&gt;</span>hello from parent<span class="tag">&lt;/<span class="name">span</span>&gt;</span></div><div class="line">      <span class="tag">&lt;<span class="name">span</span>&gt;</span>{{ props.text }}<span class="tag">&lt;/<span class="name">span</span>&gt;</span></div><div class="line">    <span class="tag">&lt;/<span class="name">template</span>&gt;</span></div><div class="line">  <span class="tag">&lt;/<span class="name">child</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></div></pre></td></tr></tbody></table></figure>
+            <p>作用域插槽更具代表性的用例是列表组件，允许组件自定义应该如何渲染列表每一项：</p>
+            <figure class="highlight html"><table><tbody><tr><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">my-awesome-list</span> <span class="attr">:items</span>=<span class="string">"items"</span>&gt;</span></div><div class="line">  <span class="comment">&lt;!-- 作用域插槽也可以在这里命名 --&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">template</span> <span class="attr">slot</span>=<span class="string">"item"</span> <span class="attr">scope</span>=<span class="string">"props"</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">li</span> <span class="attr">class</span>=<span class="string">"my-fancy-item"</span>&gt;</span>{{ props.text }}<span class="tag">&lt;/<span class="name">li</span>&gt;</span></div><div class="line">  <span class="tag">&lt;/<span class="name">template</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">my-awesome-list</span>&gt;</span></div></pre></td></tr></tbody></table></figure>
+            <p>列表组件的模板：</p>
+            <figure class="highlight html"><table><tbody><tr><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">ul</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">slot</span> <span class="attr">name</span>=<span class="string">"item"</span></span></div><div class="line">    <span class="attr">v-for</span>=<span class="string">"item in items"</span></div><div class="line">    <span class="attr">:text</span>=<span class="string">"item.text"</span>&gt;</div><div class="line">    <span class="comment">&lt;!-- fallback content here --&gt;</span></div><div class="line">  <span class="tag">&lt;/<span class="name">slot</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">ul</span>&gt;</span></div></pre></td></tr></tbody></table></figure>
+        </fieldset>
+
+        <fieldset>
+            <legend>动态组件</legend>
+            <p>通过使用保留的 <code>&lt;component&gt;</code> 元素，动态地绑定到它的 <code>is</code> 特性，我们让多个组件可以使用同一个挂载点，并动态切换：<br></p>
+            <figure class="highlight js"><table><tbody><tr><td class="code"><pre><div class="line"><span class="keyword">var</span> vm = <span class="keyword">new</span> Vue({</div><div class="line">  <span class="attr">el</span>: <span class="string">'#example'</span>,</div><div class="line">  <span class="attr">data</span>: {</div><div class="line">    <span class="attr">currentView</span>: <span class="string">'home'</span></div><div class="line">  },</div><div class="line">  <span class="attr">components</span>: {</div><div class="line">    <span class="attr">home</span>: { <span class="comment">/* ... */</span> },</div><div class="line">    <span class="attr">posts</span>: { <span class="comment">/* ... */</span> },</div><div class="line">    <span class="attr">archive</span>: { <span class="comment">/* ... */</span> }</div><div class="line">  }</div><div class="line">})</div></pre></td></tr></tbody></table></figure>
+            <figure class="highlight html"><table><tbody><tr><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">component</span> <span class="attr">v-bind:is</span>=<span class="string">"currentView"</span>&gt;</span></div><div class="line">  <span class="comment">&lt;!-- 组件在 vm.currentview 变化时改变！ --&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">component</span>&gt;</span></div></pre></td></tr></tbody></table></figure>
+
+            <p>也可以直接绑定到组件对象上：</p>
+            <figure class="highlight js"><table><tbody><tr><td class="code"><pre><div class="line"><span class="keyword">var</span> Home = {</div><div class="line">  <span class="attr">template</span>: <span class="string">'&lt;p&gt;Welcome home!&lt;/p&gt;'</span></div><div class="line">}</div><div class="line"></div><div class="line"><span class="keyword">var</span> vm = <span class="keyword">new</span> Vue({</div><div class="line">  <span class="attr">el</span>: <span class="string">'#example'</span>,</div><div class="line">  <span class="attr">data</span>: {</div><div class="line">    <span class="attr">currentView</span>: Home</div><div class="line">  }</div><div class="line">})</div></pre></td></tr></tbody></table></figure>
+        </fieldset>
+        <fieldset>
+            <legend>keep-live</legend>
+            <p>如果把切换出去的组件保留在内存中，可以保留它的状态或避免重新渲染。为此可以添加一个 <code>keep-alive</code> 指令参数：</p>
+            <figure class="highlight html"><table><tbody><tr><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">keep-alive</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">component</span> <span class="attr">:is</span>=<span class="string">"currentView"</span>&gt;</span></div><div class="line">    <span class="comment">&lt;!-- 非活动组件将被缓存！ --&gt;</span></div><div class="line">  <span class="tag">&lt;/<span class="name">component</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">keep-alive</span>&gt;</span></div></pre></td></tr></tbody></table></figure>
+        </fieldset>
     </fieldset>
 </body>
 </html>
