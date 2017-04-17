@@ -1,0 +1,79 @@
+﻿@model mvc.learn.com.Models.UserModels
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>用户详细</title>
+</head>
+<body>
+    <div>
+        用户名：@Model.UserName
+    </div>
+    <div>
+        密码：@Model.Password
+    </div>
+    <div>
+        性别：
+        @if (Model.Sex == 0)
+            {
+            @:男
+            }
+            else
+            {
+            @:女
+                }
+    </div>
+    <div>
+        年龄：@Model.Age 岁
+    </div>
+    <div>
+        身高：@Model.Height CM
+    </div>
+    <div>
+        体重：@Model.Weight KG
+    </div>
+    <div>
+        毕业院校：@Model.Graduated
+    </div>
+
+    <hr />
+    <div>
+        @using (@Html.BeginForm())
+            {
+
+            <div>
+                @Html.LabelFor(m => m.UserName)
+                ：@Html.TextBoxFor(m => m.UserName, new { @style = "width:200px" })
+
+                @Html.ValidationMessageFor(m => m.UserName)
+            </div>
+
+            <div>
+                密码：@Html.PasswordFor(m => m.Password)
+            </div>
+
+            <div>
+                性别：男 @Html.RadioButtonFor(m => m.Sex, 0, new { @name = "sex", @checked = "true" })
+                女 @Html.RadioButtonFor(m => m.Sex, 1, new { @name = "sex" })
+            </div>
+            <div>
+                年龄：@Html.TextBoxFor(m => m.Age) 岁
+            </div>
+            <div>
+                身高：@Html.TextBoxFor(m => m.Height) CM
+            </div>
+            <div>
+                体重：@Html.TextBoxFor(m => m.Weight) KG
+            </div>
+            <div>
+                毕业院校：@Html.TextBoxFor(m => m.Graduated)
+            </div>
+            <div>
+                <input type="submit" value="提交" />
+            </div>
+        }
+    </div>
+</body>
+</html>

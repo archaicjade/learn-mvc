@@ -1,0 +1,38 @@
+﻿@using Webdiyer.WebControls.Mvc
+@model PagedList<mvc.learn.com.Models.UserModels>
+@{
+    ViewBag.Title = "门极了";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>UserList</title>
+</head>
+<body>
+    <div>
+
+        <table>
+
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(m => item.UserName);
+                    </td>
+                </tr>
+            }
+
+            <tr>
+                <td>
+                    @Html.Pager(Model).Options(o => o.SetFirstPageRouteName("Default").SetRouteName("Page1").SetPagerItemTemplate("{0}&nbsp;"))
+                    <br />
+                    >>分页 共有 @Model.TotalItemCount 篇留言 @Model.CurrentPageIndex/@Model.TotalPageCount
+                </td>
+            </tr>
+        </table>
+    </div>
+</body>
+</html>

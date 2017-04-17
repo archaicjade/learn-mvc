@@ -1,0 +1,77 @@
+﻿@model mvc.learn.com.Models.UserModels
+
+@{
+    ViewBag.Title = "hello shit!!";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>你妹</title>
+</head>
+<body>
+    <div>
+
+        @{
+            int id = 100;
+            var ID = 1001;
+            string name = "变量区分大小写";
+            string Name = "大写名称";
+        }
+    </div>
+    <div>
+        <p>@id</p>
+        <p>@ID</p>
+        <p>@name</p>
+        <p>@Name</p>
+    </div>
+
+    <div>
+        <ul>
+            @{
+
+                List<SelectListItem> selectList = new List<SelectListItem>();
+                selectList.Add(new SelectListItem { Value = "1", Text = "列表1" });
+                selectList.Add(new SelectListItem { Value = "2", Text = "列表2" });
+
+                for (int i = 0; i < 10; i++)
+                {
+                    <li>
+                        @i
+                        @Html.TextBox("txtUserName")
+                        @Html.DropDownList("sellist", (SelectList)new SelectList(selectList.AsEnumerable(), "Value", "Text"));
+                        @Html.DropDownList("sellist", selectList);
+                    </li>
+                }
+            }
+        </ul>
+
+        <div ms-controller="aabb" class="ms-controller">
+            <p>
+                <input ms-duplex="##username" type="text" />
+                {{##username}}
+            </p>
+        </div>
+    </div>
+
+    @Html.Partial("~/Views/UserControl/_UserRanker.cshtml")
+</body>
+</html>
+
+
+@section Scripts{
+    <script src="~/Scripts/avalon.js"></script>
+    <script type="text/javascript">
+        avalon.ready(function () {
+            var vm = avalon.define({
+                $id: "aabb",
+                username: "what's up"
+            });
+
+            avalon.scan(document.body);
+        })
+
+    </script>
+}

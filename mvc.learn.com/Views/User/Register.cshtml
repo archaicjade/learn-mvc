@@ -1,0 +1,40 @@
+﻿@model mvc.learn.com.Models.UserModels
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>用户注册</title>
+    <link href="@Url.Content("~/Content/Site.css")" rel="stylesheet" type="text/css" />
+    <script src="@Url.Content("~/Scripts/jquery-3.1.1.min.js")" type="text/javascript"></script>
+    <script type="text/javascript" language="javascript">
+        var App = {
+            refreshCheckCode: function (imgCtr) {
+                $("#" + imgCtr).attr("src", '/Image/GetCheckCode/?r=' + Math.random());
+            }
+        }
+    </script>
+</head>
+<body>
+    @using (Html.BeginForm())
+    {
+        @Html.LabelFor(user => user.UserName)
+        @Html.TextBoxFor(user => user.UserName)
+        @Html.ValidationMessageFor(user => user.UserName)
+        <br />
+        @Html.LabelFor(user => user.Password)
+        @Html.PasswordFor(user => user.Password)
+        @Html.ValidationMessageFor(user => user.Password)
+        <br />
+        @Html.LabelFor(user => user.Phone)
+        @Html.TextBoxFor(user => user.Phone)
+        @Html.ValidationMessageFor(user => user.Phone)
+        <br />
+        <input type="text" name="checkCode" />
+        <img id="check_img" alt="验证码" src="/Image/GetCheckCode/" height="30" width="80" onclick="App.refreshCheckCode('check_img')" /><span>
+            <a href="javascript:App.refreshCheckCode('check_img');">换一换</a>
+        </span>
+        <br />
+        <input type="submit" value="注册" /><a href="/User/Login/">登陆</a>
+    }
+</body>
+</html>
