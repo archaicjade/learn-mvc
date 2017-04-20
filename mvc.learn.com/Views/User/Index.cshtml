@@ -56,7 +56,24 @@
         </div>
     </div>
 
-    @Html.Partial("~/Views/UserControl/_UserRanker.cshtml")
+    @Html.Partial("_UserRanker")
+
+    <fieldset>
+        <legend>PartialView</legend>
+        <div>
+            <h3>Call Html.Action</h3>
+            @Html.Action("Message", "User");
+        </div>
+        <div>
+            <h3>Call Html.Partial</h3>
+            @Html.Partial("uc_Message", new List<string> { "aaa", "ccc", "aaaaacccc" });
+        </div>
+        <h3>Use JQuery</h3>
+        <a id="fuckclick" href="javascript:;">Invoke LoadPartial</a>
+        <div id="fuck">
+
+        </div>
+    </fieldset>
 </body>
 </html>
 
@@ -74,4 +91,14 @@
         })
 
     </script>
+
+    <script type="text/javascript">
+        (function ($) {
+            $("#fuckclick").click(function () {
+                console.log("a");
+                $("#fuck").load('../user/message');
+            });
+        })(jQuery);
+    </script>
+
 }

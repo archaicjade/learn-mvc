@@ -9,6 +9,17 @@ namespace mvc.learn.com.Controllers
 {
     public class UserController : Controller
     {
+        [HttpGet]
+        public ActionResult Message()
+        {
+            var pobj = new List<string>()
+            {
+                "a","b","c"
+            };
+
+
+            return PartialView("uc_Message", pobj);
+        }
 
         public ActionResult Login()
         {
