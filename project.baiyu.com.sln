@@ -29,6 +29,8 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "avalon.learn.com(1)", "aval
 		DefaultWebSiteLanguage = "Visual C#"
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApplication1", "ConsoleApplication1\ConsoleApplication1.csproj", "{BCCE3742-72A9-46CA-B978-FC9599A40584}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -47,6 +49,10 @@ Global
 		{5AB6EE17-CA8A-4ED3-B730-0AFC5E63A44E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5AB6EE17-CA8A-4ED3-B730-0AFC5E63A44E}.Release|Any CPU.ActiveCfg = Debug|Any CPU
 		{5AB6EE17-CA8A-4ED3-B730-0AFC5E63A44E}.Release|Any CPU.Build.0 = Debug|Any CPU
+		{BCCE3742-72A9-46CA-B978-FC9599A40584}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BCCE3742-72A9-46CA-B978-FC9599A40584}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BCCE3742-72A9-46CA-B978-FC9599A40584}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BCCE3742-72A9-46CA-B978-FC9599A40584}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
