@@ -2,6 +2,7 @@
 using ClassLibrary1;
 using System;
 using Autofac.Configuration;
+using Ninject;
 
 namespace ConsoleApplication1
 {
@@ -10,7 +11,7 @@ namespace ConsoleApplication1
 
         public enum DBType { Sql, Redis }
 
-        static void Main(string[] args)
+        static void IOCLearn()
         {
             //ContainerBuilder builder = new ContainerBuilder();
 
@@ -87,6 +88,24 @@ namespace ConsoleApplication1
             //    var manager = container.Resolve<DBBase>();
             //    manager.Search("aaaaaa");
             //}
+        }
+
+        private static IKernel ik = new StandardKernel();
+
+        static void NinjectLearn()
+        {
+            ik.Bind<ILogger>().To<FileLogger>();
+            ik.Bind<ITester>().To<NinjectTester>().WithPropertyValue("Message", "这是一个属性注入");
+
+            var tester = ik.Get<ITester>();
+            tester.Test();
+        }
+
+        static void Main(string[] args)
+        {
+            //IOCLearn();
+
+            NinjectLearn();
 
             Console.ReadKey();
 
