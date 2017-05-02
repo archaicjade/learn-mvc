@@ -1,8 +1,7 @@
 ﻿using mvc.learn.com.Models;
-using System.Web.Mvc;
-using ClassLibrary1;
 using System.Collections.Generic;
 using System.Linq;
+using System.Web.Mvc;
 using Webdiyer.WebControls.Mvc;
 
 namespace mvc.learn.com.Controllers
@@ -44,7 +43,6 @@ namespace mvc.learn.com.Controllers
         }
 
         [HttpGet]
-        [LogActionFilter(LogMessage = "服么")]
         public ActionResult UserDetail()
         {
             UserModels userModel = new UserModels();
