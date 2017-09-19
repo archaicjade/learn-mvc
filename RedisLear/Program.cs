@@ -1,7 +1,12 @@
-﻿using StackExchange.Redis;
-using System;
-using System.Configuration;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using System.Configuration;
+using StackExchange.Redis;
+using System.Text;
+using System.Globalization;
+using System.Text.RegularExpressions;
 
 namespace RedisLear
 {
